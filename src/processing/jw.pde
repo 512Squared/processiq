@@ -15,6 +15,8 @@ void setup() {
 
 void draw() {
     textSize(32);
+    fill(255);
+    rect(width/2-64, 0, 128, 64);
     fill(0)
     text(""+gridSize, width/2 - 16, 42);
     fill(255);
