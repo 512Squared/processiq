@@ -1,4 +1,5 @@
 var gridSize = 16;
+var boxSize = 512;
 
 void setup() {
     size(768, 768);
@@ -13,9 +14,11 @@ void setup() {
 }
 
 void draw() {
+    textSize(32);
+    fill(0)
+    text(""+gridSize, width/2 - 16, 42);
     fill(255);
     rectMode(Processing.CENTER);
-    var boxSize = 512;
     var min = 128;
     var max = (min + boxSize);
     var x = min;
@@ -34,5 +37,17 @@ void draw() {
 }
 
 void mouseClicked() {
-
+    println("mouseClicked " + mouseX + "," + mouseY + "; grid=" + gridSize);
+    if (mouseY < 64) {
+        if (mouseX < 64) {
+            if (gridSize > 1) {
+                gridSize = gridSize / 2;
+            }
+        } else if (mouseX > (width-64)) {
+            if (gridSize < boxSize / 2) {
+                gridSize = gridSize * 2;
+            }
+        }
+    }
+    println("new grid = " + gridSize);
 }
