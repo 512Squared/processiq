@@ -7,17 +7,17 @@ void setup() {
   var max = (min + boxSize);
   var x = min;
   var y = min;
-  var gridSize = 8;
-  stroke(128);
+  var gridSize = 16;
+  stroke(0);
   rect(128,128,boxSize, boxSize);
   while (y < max) {
-      y += gridSize;
-      while (x < max) {
-          x += gridSize;
-          line(x, y, x, max);
-      }
       x = min;
       line(x, y, max, y);
+      while (x < max) {
+          line(x, y, x, max);
+          x += gridSize;
+      }
+      y += gridSize;
   }
 }
 
