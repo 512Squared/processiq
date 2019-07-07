@@ -1,5 +1,5 @@
-var gridSize = 256;
-var boxSize = 512;
+var gridSize = 256; // number of squares in the grid
+var boxSize = 512; // size of the box holding the grid
 
 void setup() {
     size(768, 768);
@@ -28,7 +28,7 @@ void draw() {
     var max = (min + boxSize);
     var x = min;
     var y = min;
-    stroke(0);
+    stroke(96);
     rect(128,128,boxSize, boxSize);
     while (y < max) {
         x = min;
@@ -67,7 +67,9 @@ void boxOver() {
     fill(250,150,0);
     rectMode(Processing.CORNER);
     translate(128,128);
-    rect((floor((mouseX - 128) / gridSize) * gridSize),(floor((mouseY - 128) / gridSize) * gridSize),gridSize,gridSize);
+    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ){
+        rect((floor((mouseX - 128) / gridSize) * gridSize),(floor((mouseY - 128) / gridSize) * gridSize),gridSize,gridSize);
+    }
 }
 
 
