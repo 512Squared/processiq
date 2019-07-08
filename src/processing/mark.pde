@@ -1,8 +1,8 @@
 var gridSize = 256; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
 var mouseClick = false; // set mouse click event listener
-var selectX = mouseX;
-var selectY = mouseY;
+var selectX = 0;
+var selectY = 0;
 
 void setup() {
     size(768, 768);
@@ -50,14 +50,16 @@ void draw() {
 }
 
 void boxSelection (){
-    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 && mouseClick == true ){
-        
+    if (mouseClick == true ){
+        selectState = 1; // 3 select states: no select, selectStart, and selectMade
         fill(#ffc899);
         rectMode(Processing.CORNER);
         translate(0,0);
         rect((floor((selectX - 128) / gridSize) * gridSize),(floor((selectY - 128) / gridSize) * gridSize),gridSize,gridSize);
     }    
     if (mouseClick == false) {
+        selectX = 0;
+        selectY = 0;
 
     }
     
