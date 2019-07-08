@@ -1,8 +1,16 @@
-var gridSize = 256; // number of squares in the grid
+var gridSize = 128; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
-var mouseClick = false; // set mouse click event listener
-var selectX = 0;
-var selectY = 0;
+var startSelectX = 0;
+var startSelectY = 0;
+var endSelectX = 0;
+var endSelectY = 0;
+var layerWidth = 0;
+var layerHeight = 0;
+
+// building an array to control selectState
+
+int [] selectState = {0,1,2}; // 0= layer select off, 1= layer select start point, 2= layer select completed
+var layerSelect = selectState[0]; // default, layer select is off
 
 void setup() {
     size(768, 768);
@@ -41,34 +49,44 @@ void draw() {
         y += gridSize;
     }
     boxOver();
-    if (mouseClick == true) {
-        boxSelection();
-    }
-    else if (mouseClick == false) {
-    }
-
-}
-
-void boxSelection (){
-    if (mouseClick == true ){
-        selectState = 1; // 3 select states: no select, selectStart, and selectMade
-        fill(#ffc899);
-        rectMode(Processing.CORNER);
-        translate(0,0);
-        rect((floor((selectX - 128) / gridSize) * gridSize),(floor((selectY - 128) / gridSize) * gridSize),gridSize,gridSize);
-    }    
-    if (mouseClick == false) {
-        selectX = 0;
-        selectY = 0;
-
-    }
+    boxSelection();
     
+
 }
+
+void boxSelection() {
+
+    switch (layerSelect) {
+        case selectState[0]: 
+            startSelectX = 0;
+            startSelectY = 0;
+            break;
+        case selectState[1]:
+            fill(#ffc899);
+            rectMode(Processing.CORNER);
+            translate(0,0);
+            rect((floor((startSelectX - 128) / gridSize) * gridSize),(floor((startSelectY - 128) / gridSize) * gridSize),gridSize,gridSize);
+            break;
+        case selectState[2]:
+            if (startSelectX < endSelectX && startSelectY < endSelectY) { // select box moving SE
+                fill(#ffc899);
+                rectMode(Processing.CORNER);
+                translate(0,0);
+                rect((floor((startSelectX - 128) / gridSize) * gridSize),(floor((startSelectY - 128) / gridSize) * gridSize),layerWidth,layerHeight);
+                break;
+            }
+            else {
+            println("portion not coded yet");
+            }
+        }
+        
+    }
+
 
 void mouseClicked() {
     println("mouseClicked " + mouseX + "," + mouseY + "; grid=" + gridSize);
-   
-    if (mouseY < 64) {
+    // control buttons for grid size
+    if (mouseY < 64) { 
         if (mouseX < 64) {
             if (gridSize > 1) {
                 gridSize = gridSize / 2;
@@ -78,22 +96,45 @@ void mouseClicked() {
                 gridSize = gridSize * 2;
             }
         }
+        println("new grid = " + gridSize);
     }
-    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ){
-        println("mouse click = true");
+    // select layer controls
+    
+    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ) { 
+            
+        switch (layerSelect) {
+            case selectState[0]: 
+                startSelectX = mouseX;
+                startSelectY = mouseY;
+                layerSelect = selectState[1];
+                println("BoxSelection - selection is started; startSelectX: " + startSelectX + "; startSelectY: " + startSelectY + "; endSelectX: " + endSelectX + "; endSelectY: " + endSelectY);
+                println("Mouse click. startSelect values captured");
+                break;
+            case selectState[1]:
+                endSelectX = mouseX;
+                endSelectY = mouseY;
+                layerSelect = selectState[2];
+                println("BoxSelection - selection is completed; startSelectX: " + startSelectX + "; startSelectY: " + startSelectY + "; endSelectX: " + endSelectX + "; endSelectY: " + endSelectY);
+                println("Mouse click. endSelect values captured");
+                layerWidth = ((ceil((endSelectX - 128) / gridSize) * gridSize)) - ((floor((startSelectX - 128) / gridSize) * gridSize));
+                layerHeight = ((ceil((endSelectY - 128) / gridSize) * gridSize)) - ((floor((startSelectY - 128) / gridSize) * gridSize));
+                println("layer width: " + layerWidth + "; layer height: " + layerHeight);
+                break;
+            case selectState[2]:
+                layerSelect = selectState[0];
+                startSelectX = 0;
+                endSelectX = 0;
+                startSelectY = 0;
+                endSelectY = 0; 
+                println("BoxSelection - selection switched off; startSelectX: " + startSelectX + "; startSelectY: " + startSelectY + "; endSelectX: " + endSelectX + "; endSelectY: " + endSelectY);
+                println("Mouse click. Select set to off");
+                break;
+        }
     }
     
-    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ) {
-        if (mouseClick == false) {
-        selectX = mouseX;
-        selectY = mouseY;
-        mouseClick = true;
-        }
-        else {
-            mouseClick = false;
-        }
-        }
-    println("new grid = " + gridSize);
+
+
+
     
 }
 
