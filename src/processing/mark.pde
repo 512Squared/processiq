@@ -1,11 +1,12 @@
 var gridSize = 256; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
+var mouseClick = false; // set mouse click event listener
+var selectX = mouseX;
+var selectY = mouseY;
 
 void setup() {
     size(768, 768);
-
     frameRate(30);
-
 }
 
 void draw() {
@@ -16,7 +17,6 @@ void draw() {
     rect(width-64, 0, 64, 64);
     fill(255);
     rect(width/2-64, 0, 128, 64);
-    
     textSize(32);
     fill(255);
     rect(width/2-64, 0, 128, 64);
@@ -41,13 +41,31 @@ void draw() {
         y += gridSize;
     }
     boxOver();
+    if (mouseClick == true) {
+        boxSelection();
+    }
+    else if (mouseClick == false) {
+    }
 
+}
+
+void boxSelection (){
+    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 && mouseClick == true ){
+        
+        fill(#ffc899);
+        rectMode(Processing.CORNER);
+        translate(0,0);
+        rect((floor((selectX - 128) / gridSize) * gridSize),(floor((selectY - 128) / gridSize) * gridSize),gridSize,gridSize);
+    }    
+    if (mouseClick == false) {
+
+    }
     
-
 }
 
 void mouseClicked() {
     println("mouseClicked " + mouseX + "," + mouseY + "; grid=" + gridSize);
+   
     if (mouseY < 64) {
         if (mouseX < 64) {
             if (gridSize > 1) {
@@ -59,10 +77,23 @@ void mouseClicked() {
             }
         }
     }
+    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ){
+        println("mouse click = true");
+    }
+    
+    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ) {
+        if (mouseClick == false) {
+        selectX = mouseX;
+        selectY = mouseY;
+        mouseClick = true;
+        }
+        else {
+            mouseClick = false;
+        }
+        }
     println("new grid = " + gridSize);
+    
 }
-
-
 
 void boxOver() {
     fill(250,150,0);
@@ -70,8 +101,8 @@ void boxOver() {
     translate(128,128);
     if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ){
         rect((floor((mouseX - 128) / gridSize) * gridSize),(floor((mouseY - 128) / gridSize) * gridSize),gridSize,gridSize);
+        
     }
 }
-
 
 
