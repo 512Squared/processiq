@@ -4,8 +4,7 @@ var startSelectX = 0;
 var startSelectY = 0;
 var endSelectX = 0;
 var endSelectY = 0;
-var layerWidth = 0;
-var layerHeight = 0;
+
 
 // building an array to control selectState
 
@@ -69,15 +68,13 @@ void boxSelection() {
             break;
         case selectState[2]:
             if (startSelectX < endSelectX && startSelectY < endSelectY) { // select box moving SE
-                fill(#ffc899);
+                fill(#ffc899, 128);
                 rectMode(Processing.CORNER);
                 translate(0,0);
-                rect((floor((startSelectX - 128) / gridSize) * gridSize),(floor((startSelectY - 128) / gridSize) * gridSize),layerWidth,layerHeight);
+                rect((floor((startSelectX - 128) / gridSize) * gridSize),(floor((startSelectY - 128) / gridSize) * gridSize),((ceil((endSelectX - 128) / gridSize) * gridSize)) - ((floor((startSelectX - 128) / gridSize) * gridSize)),((ceil((endSelectY - 128) / gridSize) * gridSize)) - ((floor((startSelectY - 128) / gridSize) * gridSize)));
                 break;
             }
-            else {
-            println("portion not coded yet");
-            }
+
         }
         
     }
@@ -113,12 +110,20 @@ void mouseClicked() {
             case selectState[1]:
                 endSelectX = mouseX;
                 endSelectY = mouseY;
+                swap = 0;
+                if (endSelectX < startSelectX){
+                    swap = endSelectX;
+                    endSelectX = startSelectX;
+                    startSelectX = swap;
+                }
+                if (endSelectY < startSelectY){
+                    swap = endSelectY;
+                    endSelectY = startSelectY;
+                    startSelectY = swap;
+                }
                 layerSelect = selectState[2];
                 println("BoxSelection - selection is completed; startSelectX: " + startSelectX + "; startSelectY: " + startSelectY + "; endSelectX: " + endSelectX + "; endSelectY: " + endSelectY);
                 println("Mouse click. endSelect values captured");
-                layerWidth = ((ceil((endSelectX - 128) / gridSize) * gridSize)) - ((floor((startSelectX - 128) / gridSize) * gridSize));
-                layerHeight = ((ceil((endSelectY - 128) / gridSize) * gridSize)) - ((floor((startSelectY - 128) / gridSize) * gridSize));
-                println("layer width: " + layerWidth + "; layer height: " + layerHeight);
                 break;
             case selectState[2]:
                 layerSelect = selectState[0];
