@@ -49,6 +49,38 @@ void draw() {
     }
     boxOver();
     boxSelection();
+
+    textSize(24);
+   
+    textAlign(CENTER);
+    text("Layers", 93, 550);
+    fill(146,146,146);
+    rect(55, 560, 40, 40);
+    fill(246,246,246);
+    
+    rect(95, 560, 40, 40);
+    rect(135, 560, 40, 40);
+    rect(175, 560, 40, 40);
+    rect(215, 560, 40, 40);
+    rect(255, 560, 40, 40);
+    rect(295, 560, 40, 40);
+    rect(335, 560, 40, 40);
+    rect(375, 560, 40, 40);
+    rect(415, 560, 40, 40);
+    
+    textSize(20);
+    fill(#575757)
+    text("1", 55, 573, 40, 40);
+    text("2", 95, 573, 40, 40);
+    text("3", 135, 573, 40, 40);
+    text("4", 175, 573, 40, 40);
+    text("5", 215, 573, 40, 40);
+    text("6", 255, 573, 40, 40);
+    text("7", 295, 573, 40, 40);
+    text("8", 335, 573, 40, 40);
+    text("9", 375, 573, 40, 40);
+    text("10",414, 573, 40, 40);
+   
     
 
 }
@@ -136,11 +168,13 @@ void mouseClicked() {
                 break;
         }
     }
-    
-
-
-
-    
+    if (mouseX < 127 || mouseX > 640 || mouseY < 127 || mouseY > 640 ) {
+    layerSelect = selectState[0];
+                startSelectX = 0;
+                endSelectX = 0;
+                startSelectY = 0;
+                endSelectY = 0; 
+    }
 }
 
 void boxOver() {
@@ -154,3 +188,10 @@ void boxOver() {
 }
 
 
+/* create layer from rectangle
+
+values for rect need to be stored. 
+variable to hold each layer needs to be stored
+number of layers? Set number of layers? Button for adding layers?
+Button for calling a layer into view
+*/
