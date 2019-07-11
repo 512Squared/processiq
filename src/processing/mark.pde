@@ -113,7 +113,7 @@ void mouseClicked() {
 
     if (mouseX < width/2+64 && mouseX > width/2-64 && mouseY < 64) {
         println("Console log.");
-
+        println("SlotX: " + slot1.slotX + ". SlotY: " + slot1.slotY + ". Status: " + slot1.status + ". SlotWidth: " + slot1.slotW + ". SlotHeight: " + slot1.slotH +  ". Color: " + slot1.c);
     }
 
 
