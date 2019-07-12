@@ -4,7 +4,9 @@ float startSelectX = 0;
 float startSelectY = 0;
 float endSelectX = 0;
 float endSelectY = 0;
-color c = color(255);
+int pageSize = 768;
+int offset = floor((pageSize - boxSize)/2);
+
 
 // building an array to control selectState
 
@@ -13,63 +15,76 @@ var layerSelect = selectState[0]; // default, layer select is off
 
 // building objects for the layer slots
 
-LayerSlot slot1, slot2, slot3, slot4, slot5, slot6, slot7, slot8, slot9, slot10;
+Slot s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
 
 
 void setup() {
-    size(768, 768);
+    size(pageSize, pageSize);
     frameRate(30);
-    slot1 = new LayerSlot("1",c,183,690,40,40,false);
-    slot2 = new LayerSlot("2",c,223,690,40,40,false);
-    slot3 = new LayerSlot("3",c,263,690,40,40,false);
-    slot4 = new LayerSlot("4",c,303,690,40,40,false);
-    slot5 = new LayerSlot("5",c,343,690,40,40,false);
-    slot6 = new LayerSlot("6",c,383,690,40,40,false);
-    slot7 = new LayerSlot("7",c,423,690,40,40,false);
-    slot8 = new LayerSlot("8",c,463,690,40,40,false);
-    slot9 = new LayerSlot("9",c,503,690,40,40,false);
-    slot10 = new LayerSlot("10",c,543,690,40,40,false);
+    s1 = new Slot("1",255,(offset+55),(offset+562),40,40,false);
+    s2 = new Slot("2",255,(offset+95),(offset+562),40,40,false);
+    s3 = new Slot("3",255,(offset+135),(offset+562),40,40,false);
+    s4 = new Slot("4",255,(offset+175),(offset+562),40,40,false);
+    s5 = new Slot("5",190,(offset+215),(offset+562),40,40,false);
+    s6 = new Slot("6",255,(offset+255),(offset+562),40,40,false);
+    s7 = new Slot("7",255,(offset+295),(offset+562),40,40,false);
+    s8 = new Slot("8",255,(offset+335),(offset+562),40,40,false);
+    s9 = new Slot("9",255,(offset+375),(offset+562),40,40,false);
+    s10 = new Slot("10",255,(offset+415),(offset+562),40,40,false);
 
 }
 
 void draw() {
+    
     background(100);
     mainGrid();
     layers();  // function for selecting layers
-    
+    offset = floor((pageSize - boxSize)/2);
     // draw layer slots. 
-    slot1.display();
-    slot2.display();
-    slot3.display();
-    slot4.display();
-    slot5.display();
-    slot6.display();
-    slot7.display();
-    slot8.display();
-    slot9.display();
-    slot10.display();
+    s1.display();
+    s2.display();
+    s3.display();
+    s4.display();
+    s5.display();
+    s6.display();
+    s7.display();
+    s8.display();
+    s9.display();
+    s10.display();
     boxOver(); // rollover to prompt layer select
     
 
 
 }
 
-class LayerSlot {
-    String slotNumber;
-    color c = color (255);
-    float slotX, slotY, slotW, slotH;
-    boolean status = false;
-    void display() {
+class Slot {
+    String num;
+    int c;
+    int sX, sY, sW, sH;
+    boolean stat;
+    
+    Slot(String slotnum,int slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotstat) {
+        num = slotnum;
+        c = slotcol;
+        sX = slotx;
+        sY = sloty;
+        sW = slotw;
+        sH = sloth;
+        stat = slotstat;        
+    }
+    void display() {    
+        translate(0,0);        
         fill(c);   
-        rect(slotX,slotY,slotW,slotH);
+        rect(sX,sY,sW,sH);
         textSize(20);
-        fill(#575757)
-        text(slotNumber, slotX, (slotY + 13), slotW, slotH);
+        textAlign(CENTER);
+        fill(#575757);
+        text(num, sX, (sY + 13), sW, sH);
     }
 }
-
+ 
 void layers() {
-
+ offset = floor((pageSize - boxSize)/2);
     switch (layerSelect) {
         case selectState[0]: // no select
             startSelectX = 0;
@@ -78,22 +93,24 @@ void layers() {
         case selectState[1]: // get 1st x,y co-ordinates 
             fill(#ffc899);
             rectMode(Processing.CORNER);
-            translate(0,0);
-            rect((floor((startSelectX - 128) / gridSize) * gridSize),(floor((startSelectY - 128) / gridSize) * gridSize),gridSize,gridSize);
+            rect((floor((startSelectX) / gridSize) * gridSize),(floor((startSelectY) / gridSize) * gridSize),gridSize,gridSize);
+            
             break;
         case selectState[2]: // get 2nd x,y co-ordinates and calculate layer size
             if (startSelectX < endSelectX && startSelectY < endSelectY) { // select box moving SE
                 fill(#ffc899, 128);
                 rectMode(Processing.CORNER);
-                translate(0,0);
-                rect((floor((startSelectX - 128) / gridSize) * gridSize),(floor((startSelectY - 128) / gridSize) * gridSize),((ceil((endSelectX - 128) / gridSize) * gridSize)) - ((floor((startSelectX - 128) / gridSize) * gridSize)),((ceil((endSelectY - 128) / gridSize) * gridSize)) - ((floor((startSelectY - 128) / gridSize) * gridSize)));
+                translate(offset,offset);
+                rect((floor((startSelectX - offset) / gridSize) * gridSize),(floor((startSelectY - offset) / gridSize) * gridSize),((ceil((endSelectX - offset) / gridSize) * gridSize)) - ((floor((startSelectX - offset) / gridSize) * gridSize)),((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize)));
+                println(offset);
                 break;
             }
     }
 }
 void mouseClicked() {
-    //println("mouseClicked " + mouseX + "," + mouseY + "; grid=" + gridSize);
+    
     // control buttons for grid size
+    
     if (mouseY < 64) { 
         if (mouseX < 64) {
             if (gridSize > 1) {
@@ -106,21 +123,20 @@ void mouseClicked() {
                 println("new grid = " + gridSize);
             }
         }
-        
     }
 
     // console log reporting - click on centre box
 
-    if (mouseX < width/2+64 && mouseX > width/2-64 && mouseY < 64) {
+    if (mouseX < width/2+(offset/2) && mouseX > width/2-(offset/2) && mouseY < (offset/2)) {
         println("Console log.");
-        println("SlotX: " + slot1.slotX + ". SlotY: " + slot1.slotY + ". Status: " + slot1.status + ". SlotWidth: " + slot1.slotW + ". SlotHeight: " + slot1.slotH +  ". Color: " + slot1.c);
+        println("left/right offset: " + offset);
+        println("sX: " + s1.sX + ". sY: " + s1.sY + ". Status: " + s1.stat + ". sW: " + s1.sW + ". sH: " + s1.sH +  ". C: " + s1.c);
     }
-
 
     // select layer controls
     
-    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ) { 
-            
+    if (mouseX > offset && mouseX < (offset)+512 && mouseY > offset && mouseY < (offset)+512 ) { 
+        offset = floor((pageSize - boxSize)/2);
         switch (layerSelect) {
             case selectState[0]: 
                 startSelectX = mouseX;
@@ -161,12 +177,13 @@ void mouseClicked() {
                 break;
         }
     }
-    if (mouseX < 127 || mouseX > 640 || mouseY < 127 || mouseY > 640 ) {
+    if (mouseX < offset || mouseX > 512+offset || mouseY < offset || mouseY > 512+offset ) {
     layerSelect = selectState[0];
                 startSelectX = 0;
                 endSelectX = 0;
                 startSelectY = 0;
                 endSelectY = 0; 
+               
     }
     
     if (mouseX > 223 && mouseX < 263 && mouseY >688 && mouseY < 728) { 
@@ -176,47 +193,22 @@ void mouseClicked() {
     }
 }
 void boxOver() {
+    
     fill(250,150,0);
     rectMode(Processing.CORNER);
-    translate(128,128);
-    if (mouseX > 127 && mouseX < 640 && mouseY > 127 && mouseY < 640 ){
-        rect((floor((mouseX - 128) / gridSize) * gridSize),(floor((mouseY - 128) / gridSize) * gridSize),gridSize,gridSize);
+    translate(offset,offset);
+    if (mouseX > offset && mouseX < 512+offset && mouseY > offset && mouseY < 512+offset ){
+        rect((floor((mouseX - offset) / gridSize) * gridSize),(floor((mouseY - offset) / gridSize) * gridSize),gridSize,gridSize);
     }
-    if (mouseX > 183 && mouseX < 223 && mouseY > 690 && mouseY < 730) { // slot1
         c = 140;    
+    if (mouseX > 183 && mouseX < 223 && mouseY > 690 && mouseY < 730) { // slot1
     }
-    // if (mouseX > 223 && mouseX < 263 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
-    // if (mouseX > 263 && mouseX < 303 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
-    // if (mouseX > 303 && mouseX < 343 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
-    // if (mouseX > 343 && mouseX < 383 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
-    // if (mouseX > 383 && mouseX < 423 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
-    // if (mouseX > 423 && mouseX < 463 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
-    // if (mouseX > 463 && mouseX < 503 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
-    // if (mouseX > 503 && mouseX < 543 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
-    // if (mouseX > 543 && mouseX < 583 && mouseY > 690 && mouseY < 730) { // slot1
-    //     slotSelectC = 140;    
-    // }
     else {
         c = 190;
     }
 }
 void mainGrid() {
+    offset = floor((pageSize - boxSize)/2);
     fill(255,0,0);
     rect(0,0,64,64);
     fill(0,255,0);
@@ -231,12 +223,12 @@ void mainGrid() {
     text((boxSize/gridSize)*(boxSize/gridSize), width/2, 42);
     fill(255);
     rectMode(Processing.CENTER);
-    var min = 128;
+    var min = offset;
     var max = (min + boxSize);
     var x = min;
     var y = min;
     stroke(96);
-    rect(128,128,boxSize, boxSize);
+    rect(offset,offset,boxSize,boxSize);
     while (y < max) {
         x = min;
         line(x, y, max, y);
@@ -249,7 +241,7 @@ void mainGrid() {
     textSize(24);
     fill(246, 150, 0);
     textAlign(CENTER);
-    text("Layers", 220, 680);
+    text("Layers", offset+92, offset+552);
 }
 void slotSelectFormat(){
     line(183, 690, 223, 690);
