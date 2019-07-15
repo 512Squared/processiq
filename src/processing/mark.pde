@@ -6,7 +6,7 @@ float startSelectX = 0; // layer start x co-ordinates
 float startSelectY = 0; // layer start y co-ordinates
 float endSelectX = 0; // layer end x co-ordinates
 float endSelectY = 0; // layer start y co-ordinates
-int pageSize = 1060; // size of canvas
+int pageSize = 1080; // size of canvas
 float offset = floor((pageSize - boxSize)/2); // centers grid and related elements
 
 // building an array to control selectState
@@ -37,14 +37,14 @@ class Slot
     // display slots
     String num;
     color sC;
-    public int sX, sY, sW, sH;
+    int sX, sY, sW, sH;
     boolean state;
     
     // store layer values in slots
     int lX,lY,lW,lH;
     boolean lset; 
     
-    public Slot(String slotnum,color slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotstate,int layerX,int layerY,int layerW,int layerH,boolean layerSet) {
+    Slot(String slotnum,color slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotstate,int layerX,int layerY,int layerW,int layerH,boolean layerSet) {
         
         num = slotnum;
         sC = slotcol;
@@ -60,17 +60,39 @@ class Slot
         lset = layerSet;
             
     }
+
+    void gradientRect(int x, int y, int w, int h, color gradC1, color gradC2) {
+        beginShape();
+        fill(gradC1);
+        vertex(x,y);
+        vertex(x,y+h);
+        fill(gradC2);
+        vertex(x+w,y+h);
+        vertex(x+w,y);
+        endShape();
+}
+    
     void display() { // display slots
 
         if (state == true) 
         
         {
-            fill(190);
-            rect(sX,sY,sW,sH);
+            // fill(59,70,84);
+            gradC1 = (59,70,84);
+            gradC2 = (73,87,105);
+            gradientRect(sX,sY,sW,sH,gradC1,gradC2);
             textSize(20);
             textAlign(CENTER);
-            fill(#575757);
+            fill(#f2f2f2);
             text(num, sX, (sY + 13), sW, sH);
+            stroke(150,164,181);
+            line(sX+1,sY+39,sX+39,sY+39);
+            line(sX+39,sY+1,sX+39,sY+39);
+            stroke(27,30,33);
+            line(sX+1,sY+1,sX+1,sY+39);
+            line(sX+1,sY+1,sX+39,sY+1);
+            stroke(96);
+
 
         } 
         
@@ -85,15 +107,45 @@ class Slot
             text(num, sX, (sY + 13), sW, sH);
         }
 
-        if (mouseX > sX && mouseX < sX+40 && mouseY > sY && mouseY < sY+40){
-        fill(190)
+        if (mouseX > sX && mouseX < sX+40 && mouseY > sY && mouseY < sY+40 && state == false) {
+        fill(125)
         rect(sX,sY,40,40);
         textSize(20);
         textAlign(CENTER);
-        fill(#575757);
+        fill(#f2f2f2);
         text(num, sX, (sY + 13), sW, sH);
-        println("mouse hover");
+
+
+        
+        if (mousePressed == true && state == false)
+        
+        {
+            gradC1 = (59,70,84);
+            gradC2 = (73,87,105);
+            gradientRect(sX,sY,sW,sH,gradC1,gradC2);
+            textSize(20);
+            textAlign(CENTER);
+            fill(#f2f2f2);
+            text(num, sX, (sY + 13), sW, sH);
+            stroke(150,164,181);
+            line(sX+1,sY+39,sX+39,sY+39);
+            line(sX+39,sY+1,sX+39,sY+39);
+            stroke(27,30,33);
+            line(sX+1,sY+1,sX+1,sY+39);
+            line(sX+1,sY+1,sX+39,sY+1);
+            stroke(96);
         }
+        
+
+        
+        
+        else {
+        }
+        
+    }
+        
+
+
 
     }
     
@@ -116,6 +168,7 @@ class ControlPanel
         translate(0,0);        
         fill(255);   
         rect(cX,cY,cW,cH);
+        
     }
 
 
@@ -190,6 +243,7 @@ void layers()
 void mouseClicked() 
 
 {
+    // CHANGE GRID SIZE
     if (mouseY < 64) { 
         if (mouseX < 64) {
             if (gridSize > 1) {
@@ -203,11 +257,15 @@ void mouseClicked()
             }
         }
     }
+    
+    // CONSOLE LOG REPORTING
     if (mouseX < width/2+(offset/2) && mouseX > width/2-(offset/2) && mouseY < (offset/2)) {
         println("Console log.");
         println("left/right offset: " + offset);
         println("sX: " + s1.sX + ". sY: " + s1.sY + ". Status: " + s1.stat + ". sW: " + s1.sW + ". sH: " + s1.sH +  ". C: " + s1.c);
     }
+
+    // SELECT LAYER 
     if (mouseX > offset && mouseX < (offset)+512 && mouseY > offset && mouseY < (offset)+512 ) { 
         offset = floor((pageSize - boxSize)/2);
         switch (layerSelect) {
@@ -250,6 +308,8 @@ void mouseClicked()
                 break;
         }
     }
+
+
     if (mouseX < offset || mouseX > 512+offset || mouseY < offset || mouseY > 512+offset ) {
         layerSelect = selectState[0];
         startSelectX = 0;
@@ -259,9 +319,10 @@ void mouseClicked()
                
     }
 
-    
+    //SLOT SELECTION
     if (mouseX > s1.sX && mouseX < s1.sX+40 && mouseY > s1.sY && mouseY < s1.sY+40){ // slots
-        println("mouseclick on slot1 executed");
+
+        
         fill(190);
         rect(s1.sX,s1.sY,40,40);
         textSize(20);
@@ -280,10 +341,11 @@ void mouseClicked()
                 s9.state = false;
                 s10.state = false;
         }
+        
        
     }
     if (mouseX > s2.sX && mouseX < s2.sX+40 && mouseY > s2.sY && mouseY < s2.sY+40){ // slots
-        println("mouseclick on slot2 executed");
+        
         fill(190);
         rect(s2.sX,s2.sY,40,40);
         textSize(20);
@@ -304,7 +366,7 @@ void mouseClicked()
         }
     }    
     if (mouseX > s3.sX && mouseX < s3.sX+40 && mouseY > s3.sY && mouseY < s3.sY+40){ // slots
-        println("mouseclick on slot3 executed");
+        
         fill(190);
         rect(s3.sX,s3.sY,40,40);
         textSize(20);
@@ -325,7 +387,7 @@ void mouseClicked()
         }
     }    
     if (mouseX > s4.sX && mouseX < s4.sX+40 && mouseY > s4.sY && mouseY < s4.sY+40){ // slots
-        println("mouseclick on slot4 executed");
+        
         fill(190);
         rect(s4.sX,s4.sY,40,40);
         textSize(20);
@@ -346,7 +408,7 @@ void mouseClicked()
         }
     }
     if (mouseX > s5.sX && mouseX < s5.sX+40 && mouseY > s5.sY && mouseY < s5.sY+40){ // slots
-        println("mouseclick on slot5 executed");
+        
         fill(190);
         rect(s5.sX,s5.sY,40,40);
         textSize(20);
@@ -367,7 +429,7 @@ void mouseClicked()
         }
     }
     if (mouseX > s6.sX && mouseX < s6.sX+40 && mouseY > s6.sY && mouseY < s6.sY+40){ // slots
-        println("mouseclick on slot6 executed");
+        
         fill(190);
         rect(s6.sX,s6.sY,40,40);
         textSize(20);
@@ -388,7 +450,7 @@ void mouseClicked()
         }
     }
     if (mouseX > s7.sX && mouseX < s7.sX+40 && mouseY > s7.sY && mouseY < s7.sY+40){ // slots
-        println("mouseclick on slot7 executed");
+        
         fill(190);
         rect(s7.sX,s7.sY,40,40);
         textSize(20);
@@ -409,7 +471,7 @@ void mouseClicked()
         }
     }
     if (mouseX > s8.sX && mouseX < s8.sX+40 && mouseY > s8.sY && mouseY < s8.sY+40){ // slots
-        println("mouseclick on slot executed");
+        
         fill(190);
         rect(s8.sX,s8.sY,40,40);
         textSize(20);
@@ -430,7 +492,7 @@ void mouseClicked()
         }
     }
     if (mouseX > s9.sX && mouseX < s9.sX+40 && mouseY > s9.sY && mouseY < s9.sY+40){ // slots
-        println("mouseclick on slot executed");
+        
         fill(190);
         rect(s9.sX,s9.sY,40,40);
         textSize(20);
@@ -451,7 +513,7 @@ void mouseClicked()
         }
     }
     if (mouseX > s10.sX && mouseX < s10.sX+40 && mouseY > s10.sY && mouseY < s10.sY+40){ // slots
-        println("mouseclick on slot executed");
+        
         fill(190);
         rect(s10.sX,s10.sY,40,40);
         textSize(20);
@@ -470,7 +532,7 @@ void mouseClicked()
                 s9.state = false;
                 s10.state = true;
         }
-    } 
+    }  
     
 
 }
