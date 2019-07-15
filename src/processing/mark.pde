@@ -1,47 +1,118 @@
+/* @pjs preload="save.png,clear.png"; */
+
 var gridSize = 128; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
-float startSelectX = 0;
-float startSelectY = 0;
-float endSelectX = 0;
-float endSelectY = 0;
-int pageSize = 1000;
-float offset = floor((pageSize - boxSize)/2);
+float startSelectX = 0; // layer start x co-ordinates
+float startSelectY = 0; // layer start y co-ordinates
+float endSelectX = 0; // layer end x co-ordinates
+float endSelectY = 0; // layer start y co-ordinates
+int pageSize = 1060; // sets sizez of canvas
+float offset = floor((pageSize - boxSize)/2); // centers grid and related elements
 
 // building an array to control selectState
 
 int [] selectState = {0,1,2}; // 0= layer select off, 1= layer select start point, 2= layer select completed
 var layerSelect = selectState[0]; // default, layer select is off
 
-// building objects for the layer slots
-
-Slot s1, s2, s3, s4, s5, s6, s7, s8, s9, s10;
-
+Slot s1, s2, s3, s4, s5, s6, s7, s8, s9, s10; // slots
 
 void setup() {
     size(pageSize, pageSize);
     frameRate(30);
-    s1 = new Slot("1",255,(offset+55),(offset+572),40,40,false);
-    s2 = new Slot("2",255,(offset+95),(offset+572),40,40,false);
-    s3 = new Slot("3",255,(offset+135),(offset+572),40,40,false);
-    s4 = new Slot("4",255,(offset+175),(offset+572),40,40,false);
-    s5 = new Slot("5",190,(offset+215),(offset+572),40,40,false);
-    s6 = new Slot("6",255,(offset+255),(offset+572),40,40,false);
-    s7 = new Slot("7",255,(offset+295),(offset+572),40,40,false);
-    s8 = new Slot("8",255,(offset+335),(offset+572),40,40,false);
-    s9 = new Slot("9",255,(offset+375),(offset+572),40,40,false);
-    s10 = new Slot("10",255,(offset+415),(offset+572),40,40,false);
-
+    drawControls();
 }
 
 void draw() {
     
     background(100);
     mainGrid();
-    
-    // function for selecting layers
     layers(); 
+    drawSlots();
+    boxOver(); 
+   
+}
+
+class Slot 
+
+{
+    // display slots
+    String num;
+    int c;
+    int sX, sY, sW, sH;
+    boolean stat;
     
-    // draw layer slots. 
+    // store layer values in slots
+    int lX,lY,lW,lH;
+    boolean lset; 
+    
+    Slot(String slotnum,int slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotstat,int layerX,int layerY,int layerW,int layerH,boolean layerSet) {
+        num = slotnum;
+        c = slotcol;
+        sX = slotx;
+        sY = sloty;
+        sW = slotw;
+        sH = sloth;
+        stat = slotstat;
+        lX = layerX;
+        lY = layerY;
+        lW = layerW;
+        lH = layerH;
+        lset = layerSet;
+            
+    }
+    void display() { // display slots
+        fill(c);   
+        rect(sX,sY,sW,sH);
+        textSize(20);
+        textAlign(CENTER);
+        fill(#575757);
+        text(num, sX, (sY + 13), sW, sH);
+
+    }
+}
+
+class ControlPanel 
+
+{
+
+    int cX,cY,cW,cH;
+
+    ControlPanel(int controlX, int controlY,int controlW,int controlH) {
+        cX = controlX;
+        cY = controlY;
+        cW = controlW;
+        cH = controlH;
+    }
+
+    void display()  { // display controlPanel buttons
+        translate(0,0);        
+        fill(255);   
+        rect(cX,cY,cW,cH);
+    }
+
+
+}
+
+void drawControls()
+
+{
+    s1 = new Slot("1",255,(offset+55),(offset+572),40,40,false,0,0,0,0,false);
+    s2 = new Slot("2",255,(offset+95),(offset+572),40,40,false,0,0,0,0,false);
+    s3 = new Slot("3",255,(offset+135),(offset+572),40,40,false,0,0,0,0,false);
+    s4 = new Slot("4",255,(offset+175),(offset+572),40,40,false,0,0,0,0,false);
+    s5 = new Slot("5",190,(offset+215),(offset+572),40,40,false,0,0,0,0,false);
+    s6 = new Slot("6",255,(offset+255),(offset+572),40,40,false,0,0,0,0,false);
+    s7 = new Slot("7",255,(offset+295),(offset+572),40,40,false,0,0,0,0,false);
+    s8 = new Slot("8",255,(offset+335),(offset+572),40,40,false,0,0,0,0,false);
+    s9 = new Slot("9",255,(offset+375),(offset+572),40,40,false,0,0,0,0,false);
+    s10 = new Slot("10",255,(offset+415),(offset+572),40,40,false,0,0,0,0,false);
+    cSave = new ControlPanel((offset+55),(offset+617),40,40);
+    cClear = new ControlPanel((offset+95),(offset+617),40,40);
+}
+
+void drawSlots()
+
+{
     s1.display();
     s2.display();
     s3.display();
@@ -52,39 +123,17 @@ void draw() {
     s8.display();
     s9.display();
     s10.display();
-    
-    // rollover to prompt layer select
-    boxOver(); 
-
-}
-
-class Slot {
-    String num;
-    int c;
-    int sX, sY, sW, sH;
-    boolean stat;
-    
-    Slot(String slotnum,int slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotstat) {
-        num = slotnum;
-        c = slotcol;
-        sX = slotx;
-        sY = sloty;
-        sW = slotw;
-        sH = sloth;
-        stat = slotstat;        
-    }
-    void display() {    
-        translate(0,0);        
-        fill(c);   
-        rect(sX,sY,sW,sH);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(num, sX, (sY + 13), sW, sH);
-    }
+    cSave.display();
+    cClear.display();
+    PImage save = loadImage("save.png");
+    image(save,offset+60,offset+623,30,30);
+    PImage clear = loadImage("clear.png");
+    image(clear,offset+100,offset+623,30,30);
 }
  
-void layers() {
+void layers() 
+
+{
  offset = floor((pageSize - boxSize)/2);
     switch (layerSelect) {
         case selectState[0]: // no select
@@ -101,12 +150,14 @@ void layers() {
                 fill(#ffc899, 128);
                 rectMode(Processing.CORNER);
                 rect((floor((startSelectX - offset) / gridSize) * gridSize) + offset,(floor((startSelectY - offset) / gridSize) * gridSize) + offset,((ceil((endSelectX - offset) / gridSize) * gridSize)) - ((floor((startSelectX - offset) / gridSize) * gridSize)),((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize)));
-                println(offset);
                 break;
             }
     }
 }
-void mouseClicked() {
+
+void mouseClicked() 
+
+{
     
     if (mouseY < 64) { 
         if (mouseX < 64) {
@@ -182,7 +233,10 @@ void mouseClicked() {
         println("Layers box click activated");
     }
 }
-void boxOver() {
+
+void boxOver() 
+
+{
     
     fill(250,150,0);
     rectMode(Processing.CORNER);
@@ -197,7 +251,10 @@ void boxOver() {
         c = 190;
     }
 }
-void mainGrid() {
+
+void mainGrid() 
+
+{
     
     fill(255,0,0);
     rect(0,0,64,64);
@@ -236,7 +293,10 @@ void mainGrid() {
     textAlign(CENTER);
     text("Layers", offset+92, offset+562);
 }
-void slotSelectFormat(){
+
+void slotSelectFormat()
+
+{
     line(183, 690, 223, 690);
     stroke(20);
     line(223, 690, 223, 730);
