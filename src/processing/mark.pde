@@ -1,4 +1,4 @@
-/* @pjs preload="save.png,clear.png"; */
+/* @pjs preload="save.png,clear.png,save_on.png,clear_on.png"; */
 
 var gridSize = 128; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
@@ -15,6 +15,13 @@ int [] selectState = {0,1,2}; // 0= layer select off, 1= layer select start poin
 var layerSelect = selectState[0]; // default, layer select is off
 
 Slot s1, s2, s3, s4, s5, s6, s7, s8, s9, s10; // layer save slots
+
+ControlPanel c1,c2;
+
+PImage save = loadImage("save.png");
+PImage clear = loadImage("clear.png");
+PImage save_on = loadImage("save_on.png");
+PImage clear_on = loadImage("clear_on.png");
 
 void setup() {
     size(pageSize, pageSize);
@@ -83,7 +90,7 @@ class Slot
             gradientRect(sX,sY,sW,sH,gradC1,gradC2);
             textSize(20);
             textAlign(CENTER);
-            fill(#f2f2f2);
+            fill(#fefefe);
             text(num, sX, (sY + 13), sW, sH);
             stroke(150,164,181);
             line(sX+1,sY+39,sX+39,sY+39);
@@ -108,12 +115,19 @@ class Slot
         }
 
         if (mouseX > sX && mouseX < sX+40 && mouseY > sY && mouseY < sY+40 && state == false) {
-        fill(125)
-        rect(sX,sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#f2f2f2);
-        text(num, sX, (sY + 13), sW, sH);
+            fill(255);   
+            rect(sX,sY,sW,sH);
+            stroke(150,164,181);
+            line(sX+1,sY+39,sX+39,sY+39);
+            line(sX+39,sY+1,sX+39,sY+39);
+            stroke(27,30,33);
+            line(sX+1,sY+1,sX+1,sY+39);
+            line(sX+1,sY+1,sX+39,sY+1);
+            stroke(96);
+            textSize(20);
+            textAlign(CENTER);
+            fill(#171717);
+            text(num, sX, (sY + 13), sW, sH);
 
 
         
@@ -145,8 +159,6 @@ class Slot
     }
         
 
-
-
     }
     
 }
@@ -155,19 +167,124 @@ class ControlPanel
 
 {
 
-    int cX,cY,cW,cH;
+    int cX,cY,cW,cH; // controlPanel button co-ordinates
+    boolean cS; // state of controlPanel button
 
-    ControlPanel(int controlX, int controlY,int controlW,int controlH) {
+    ControlPanel(int controlX, int controlY,int controlW,int controlH, boolean controlS) {
         cX = controlX;
         cY = controlY;
         cW = controlW;
         cH = controlH;
+        cS = controlS;
     }
 
+
+
     void display()  { // display controlPanel buttons
-        translate(0,0);        
-        fill(255);   
-        rect(cX,cY,cW,cH);
+
+
+        // buttons set on or off
+        
+        if (c1.cS == false)
+        
+        { // save is off
+            fill(255);   
+            rect(c1.cX,c1.cY,c1.cW,c1.cH);
+            image(save,offset+60,offset+623,30,30); 
+
+        }
+        
+        if (c1.cS == true) 
+        
+        { // save is on
+            translate(0,0);        
+            fill(#646464);   
+            rect(c1.cX,c1.cY,c1.cW,c1.cH);
+            stroke(150,164,181);
+            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+            stroke(27,30,33);
+            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            stroke(96);
+            image(save_on,c1.cX+5,c1.cY+5,30,30);
+
+        }
+        
+        if (c2.cS == false && c1.cS == true) 
+        
+        { // clear is off
+            fill(255); 
+            rect(c2.cX,c2.cY,c2.cW,c2.cH);
+            image(clear,offset+100,offset+623,30,30);
+        }
+
+        // mouse press effects
+        if (mousePressed == true && c1.cS == false)
+        
+        {
+            if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) 
+
+            {
+            fill(#646464);   
+            rect(c1.cX,c1.cY,c1.cW,c1.cH);
+            stroke(150,164,181);
+            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+            stroke(27,30,33);
+            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            stroke(96);
+            image(save_on,c1.cX+5,c1.cY+5,30,30);
+            }        
+
+        }
+
+        if (mousePressed == true && c1.cS == true)
+        
+        {
+            if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40){
+                fill(#646464);   
+                rect(c2.cX,c2.cY,c2.cW,c2.cH);
+                stroke(150,164,181);
+                line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+                line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+                stroke(27,30,33);
+                line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+                line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+                stroke(96);
+                image(clear_on,c2.cX+5,c2.cY+5,30,30);
+            }
+        }
+
+        // button hovers
+        
+        if (mouseX > cX && mouseX < cX+40 && mouseY > cY && mouseY < cY+40 && c1.cS == true) 
+        
+        {
+            stroke(150,164,181);
+            line(cX+1,cY+39,cX+39,cY+39);
+            line(cX+39,cY+1,cX+39,cY+39);
+            stroke(27,30,33);
+            line(cX+1,cY+1,cX+1,cY+39);
+            line(cX+1,cY+1,cX+39,cY+1);
+            stroke(96);
+
+        }
+        
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cS == false) 
+        
+        {
+            stroke(150,164,181);
+            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+            stroke(27,30,33);
+            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            stroke(96);
+
+        }
+        
         
     }
 
@@ -187,8 +304,8 @@ void setupControls()
     s8 = new Slot("8",255,(offset+335),(offset+572),40,40,false,0,0,0,0,false);
     s9 = new Slot("9",255,(offset+375),(offset+572),40,40,false,0,0,0,0,false);
     s10 = new Slot("10",255,(offset+415),(offset+572),40,40,false,0,0,0,0,false);
-    cSave = new ControlPanel((offset+55),(offset+617),40,40);
-    cClear = new ControlPanel((offset+95),(offset+617),40,40);
+    c1 = new ControlPanel((offset+55),(offset+617),40,40,false);
+    c2 = new ControlPanel((offset+95),(offset+617),40,40,false);
     
 }
 
@@ -205,13 +322,8 @@ void drawSlots()
     s8.display();
     s9.display();
     s10.display();
-    cSave.display();
-    cClear.display();
-    PImage save = loadImage("save.png");
-    image(save,offset+60,offset+623,30,30);
-    PImage clear = loadImage("clear.png");
-    image(clear,offset+100,offset+623,30,30);
-
+    c1.display();
+    c2.display();
 
     
 }
@@ -263,11 +375,12 @@ void mouseClicked()
         println("Console log.");
         println("left/right offset: " + offset);
         println("sX: " + s1.sX + ". sY: " + s1.sY + ". Status: " + s1.stat + ". sW: " + s1.sW + ". sH: " + s1.sH +  ". C: " + s1.c);
+        println("layer X: " + s1.lX + "; layer Y: " + s1.lY + "; layer width: " + s1.lW + "; layer height: " + s1.lH);
     }
 
     // SELECT LAYER 
     if (mouseX > offset && mouseX < (offset)+512 && mouseY > offset && mouseY < (offset)+512 ) { 
-        offset = floor((pageSize - boxSize)/2);
+        //offset = floor((pageSize - boxSize)/2);
         switch (layerSelect) {
             case selectState[0]: 
                 startSelectX = mouseX;
@@ -308,8 +421,6 @@ void mouseClicked()
                 break;
         }
     }
-
-
     if (mouseX < offset || mouseX > 512+offset || mouseY < offset || mouseY > 512+offset ) {
         layerSelect = selectState[0];
         startSelectX = 0;
@@ -322,13 +433,6 @@ void mouseClicked()
     //SLOT SELECTION
     if (mouseX > s1.sX && mouseX < s1.sX+40 && mouseY > s1.sY && mouseY < s1.sY+40){ // slots
 
-        
-        fill(190);
-        rect(s1.sX,s1.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s1.num, s1.sX, (s1.sY + 13), s1.sW, s1.sH);
         if (s1.state == false) {
                 s1.state = true;
                 s2.state = false;
@@ -341,17 +445,34 @@ void mouseClicked()
                 s9.state = false;
                 s10.state = false;
         }
-        
-       
+
+        if (s1.state == true) {
+
+            if (endSelectX < startSelectX){
+                    swap = endSelectX;
+                    endSelectX = startSelectX;
+                    startSelectX = swap;
+                }
+                
+                if (endSelectY < startSelectY){
+                    swap = endSelectY;
+                    endSelectY = startSelectY;
+                    startSelectY = swap;
+                }
+
+            s1.lX = (floor((startSelectX - offset) / gridSize) * gridSize) + offset;
+            
+            s1.lY = (floor((startSelectY - offset) / gridSize) * gridSize) + offset;
+            
+            s1.lW = ((ceil((endSelectX - offset) / gridSize) * gridSize)) - ((floor((startSelectX - offset) / gridSize) * gridSize));
+            
+            s1.lH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
+
+        }
+    
     }
     if (mouseX > s2.sX && mouseX < s2.sX+40 && mouseY > s2.sY && mouseY < s2.sY+40){ // slots
         
-        fill(190);
-        rect(s2.sX,s2.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s2.num, s2.sX, (s2.sY + 13), s2.sW, s2.sH);
         if (s2.state == false) {
                 s1.state = false;
                 s2.state = true;
@@ -367,12 +488,6 @@ void mouseClicked()
     }    
     if (mouseX > s3.sX && mouseX < s3.sX+40 && mouseY > s3.sY && mouseY < s3.sY+40){ // slots
         
-        fill(190);
-        rect(s3.sX,s3.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s3.num, s3.sX, (s3.sY + 13), s3.sW, s3.sH);
         if (s3.state == false) {
                 s1.state = false;
                 s2.state = false;
@@ -388,12 +503,6 @@ void mouseClicked()
     }    
     if (mouseX > s4.sX && mouseX < s4.sX+40 && mouseY > s4.sY && mouseY < s4.sY+40){ // slots
         
-        fill(190);
-        rect(s4.sX,s4.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s4.num, s4.sX, (s4.sY + 13), s4.sW, s4.sH);
         if (s4.state == false) {
                 s1.state = false;
                 s2.state = false;
@@ -409,12 +518,6 @@ void mouseClicked()
     }
     if (mouseX > s5.sX && mouseX < s5.sX+40 && mouseY > s5.sY && mouseY < s5.sY+40){ // slots
         
-        fill(190);
-        rect(s5.sX,s5.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s5.num, s5.sX, (s5.sY + 13), s5.sW, s5.sH);
         if (s5.state == false) {
                 s1.state = false;
                 s2.state = false;
@@ -430,12 +533,6 @@ void mouseClicked()
     }
     if (mouseX > s6.sX && mouseX < s6.sX+40 && mouseY > s6.sY && mouseY < s6.sY+40){ // slots
         
-        fill(190);
-        rect(s6.sX,s6.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s6.num, s6.sX, (s6.sY + 13), s6.sW, s6.sH);
         if (s6.state == false) {
                 s1.state = false;
                 s2.state = false;
@@ -451,12 +548,7 @@ void mouseClicked()
     }
     if (mouseX > s7.sX && mouseX < s7.sX+40 && mouseY > s7.sY && mouseY < s7.sY+40){ // slots
         
-        fill(190);
-        rect(s7.sX,s7.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s7.num, s7.sX, (s7.sY + 13), s7.sW, s7.sH);
+
         if (s7.state == false) {
                 s1.state = false;
                 s2.state = false;
@@ -472,12 +564,7 @@ void mouseClicked()
     }
     if (mouseX > s8.sX && mouseX < s8.sX+40 && mouseY > s8.sY && mouseY < s8.sY+40){ // slots
         
-        fill(190);
-        rect(s8.sX,s8.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s8.num, s8.sX, (s8.sY + 13), s8.sW, s8.sH);
+
         if (s8.state == false) {
                 s1.state = false;
                 s2.state = false;
@@ -493,12 +580,7 @@ void mouseClicked()
     }
     if (mouseX > s9.sX && mouseX < s9.sX+40 && mouseY > s9.sY && mouseY < s9.sY+40){ // slots
         
-        fill(190);
-        rect(s9.sX,s9.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s9.num, s9.sX, (s9.sY + 13), s9.sW, s9.sH);
+
         if (s9.state == false) {
                 s1.state = false;
                 s2.state = false;
@@ -514,12 +596,6 @@ void mouseClicked()
     }
     if (mouseX > s10.sX && mouseX < s10.sX+40 && mouseY > s10.sY && mouseY < s10.sY+40){ // slots
         
-        fill(190);
-        rect(s10.sX,s10.sY,40,40);
-        textSize(20);
-        textAlign(CENTER);
-        fill(#575757);
-        text(s10.num, s10.sX, (s10.sY + 13), s10.sW, s10.sH);
         if (s10.state == false) {
                 s1.state = false;
                 s2.state = false;
@@ -533,8 +609,22 @@ void mouseClicked()
                 s10.state = true;
         }
     }  
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) {
+        if (c1.cS == false) {
+            c1.cS = true;
+            c2.cS = false;
+        }
+    }
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40) {
     
+       if (c1.cS == true) {
+           c1.cS = false;
+       }
+        else {
+            c2.cS = false;
+        }
 
+    }
 }
 
 void boxOver() 
