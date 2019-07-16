@@ -1,4 +1,4 @@
-/* @pjs preload="save.png,clear.png,save_on.png,clear_on.png"; */
+/* @pjs preload="save.png,clear.png,saveOn.png,clearOn.png,saveShow.png"; */
 
 var gridSize = 128; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
@@ -20,8 +20,9 @@ ControlPanel c1,c2;
 
 PImage save = loadImage("save.png");
 PImage clear = loadImage("clear.png");
-PImage save_on = loadImage("save_on.png");
-PImage clear_on = loadImage("clear_on.png");
+PImage saveOn = loadImage("saveOn.png");
+PImage clearOn = loadImage("clearOn.png");
+PImage saveShow = loadImage("saveShow.png");
 
 void setup() {
     size(pageSize, pageSize);
@@ -244,7 +245,7 @@ class ControlPanel
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
             stroke(96);
-            image(save_on,c1.cX+5,c1.cY+6,30,30);
+            image(saveShow,c1.cX+5,c1.cY+6,30,30);
 
         }
         
@@ -265,10 +266,6 @@ class ControlPanel
             stroke(150,164,181);
             line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
             line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
-            
-            stroke(120);
-            line(c2.cX+2,c2.cY+38,c2.cX+38,c2.cY+38);
-            line(c2.cX+38,c2.cY+2,c2.cX+38,c2.cY+38);
             
             stroke(15);
             line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
@@ -315,6 +312,32 @@ class ControlPanel
 
         }
 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cS == true) 
+        
+        {
+            stroke(150,164,181);
+            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+            
+            stroke(15);
+            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            stroke(44,49,54);
+            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+           
+            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+            stroke(#646464);
+            fill(#646464);
+            rect(offset+60,offset+623,30,30); 
+            
+            image(saveShow,offset+60,offset+623,30,30); 
+            stroke(96);
+            
+           
+
+
+        }
+
                 // mouse press effects
         if (mousePressed == true && c1.cS == false)
         
@@ -322,6 +345,7 @@ class ControlPanel
             if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) 
 
             {
+            image(saveOn,c1.cX+5,c1.cY+6,30,30);
             fill(#646464);   
             rect(c1.cX,c1.cY,c1.cW,c1.cH);
             
@@ -340,8 +364,8 @@ class ControlPanel
            
             line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
-            
-            image(save_on,c1.cX+5,c1.cY+6,30,30);
+
+            image(saveShow,c1.cX+5,c1.cY+6,30,30);
             }        
 
         }
@@ -349,6 +373,31 @@ class ControlPanel
         if (mousePressed == true && c1.cS == true)
         
         {
+        
+            if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) 
+
+            {
+                
+            stroke(150,164,181);
+            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+            
+            stroke(15);
+            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            stroke(44,49,54);
+            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+           
+            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+            stroke(#646464);
+            fill(#646464);
+            rect(offset+60,offset+623,30,30); 
+            
+            image(saveOn,offset+60,offset+623,30,30); 
+            stroke(96);
+            }
+        
+        
         if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40){
             fill(#646464);   
             rect(c2.cX,c2.cY,c2.cW,c2.cH);
@@ -373,7 +422,7 @@ class ControlPanel
             stroke(#646464);
             fill(#646464);
             rect(offset+100,offset+623,30,30); 
-            image(clear_on,c2.cX+5,c2.cY+6,30,30);
+            image(clearOn,c2.cX+5,c2.cY+6,30,30);
             stroke(96);
             }
         }
@@ -454,12 +503,12 @@ void mouseClicked()
         if (mouseX < 64) {
             if (gridSize > 1) {
                 gridSize = gridSize / 2;
-                println("new grid = " + gridSize);
+                
             }
         } else if (mouseX > (width-64)) {
             if (gridSize < boxSize / 2) {
                 gridSize = gridSize * 2;
-                println("new grid = " + gridSize);
+               
             }
         }
     }
@@ -474,7 +523,6 @@ void mouseClicked()
 
     // SELECT LAYER 
     if (mouseX > offset && mouseX < (offset)+512 && mouseY > offset && mouseY < (offset)+512 ) { 
-        //offset = floor((pageSize - boxSize)/2);
         switch (layerSelect) {
             case selectState[0]: 
                 startSelectX = mouseX;
@@ -515,7 +563,7 @@ void mouseClicked()
                 break;
         }
     }
-    if (mouseX < offset || mouseX > 512+offset || mouseY < offset || mouseY > 512+offset ) {
+    if ((mouseY > 64 && mouseX < offset) || (mouseY > 64 && mouseX < offset) || (mouseX > 512+offset && mouseY > 64)) {
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
