@@ -1,4 +1,4 @@
-/* @pjs preload="images/save.png,images/clear.png,images/saveOn.png,images/clearOn.png,saveShow.png"; */
+/* @pjs preload="images/save.png,images/clear.png,images/saveOn.png,images/clearOn.png,images/saveShow.png"; */
 
 var gridSize = 128; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
