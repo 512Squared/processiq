@@ -1,4 +1,4 @@
-/* @pjs preload="save.png,clear.png,saveOn.png,clearOn.png,saveShow.png"; */
+/* @pjs preload="images/save.png,images/clear.png,images/saveOn.png,images/clearOn.png,saveShow.png"; */
 
 var gridSize = 128; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
@@ -18,11 +18,11 @@ Slot s1, s2, s3, s4, s5, s6, s7, s8, s9, s10; // layer save slots
 
 ControlPanel c1,c2;
 
-PImage save = loadImage("save.png");
-PImage clear = loadImage("clear.png");
-PImage saveOn = loadImage("saveOn.png");
-PImage clearOn = loadImage("clearOn.png");
-PImage saveShow = loadImage("saveShow.png");
+PImage save = loadImage("images/save.png");
+PImage clear = loadImage("images/clear.png");
+PImage saveOn = loadImage("images/saveOn.png");
+PImage clearOn = loadImage("images/clearOn.png");
+PImage saveShow = loadImage("images/saveShow.png");
 
 void setup() {
     size(pageSize, pageSize);
