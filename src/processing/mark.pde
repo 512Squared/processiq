@@ -43,33 +43,37 @@ class Slot
 
 {
     // display slots
-    String num;
+    String slotNum;
     color sC;
     int sX, sY, sW, sH;
-    boolean state;
+    boolean slotState;
     
     // store layer values in slots
-    int lX,lY,lW,lH;
-    boolean lset; 
+    int layX,layY,layW,layH;
+    boolean layerSet; 
     
-    Slot(String slotnum,color slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotstate,int layerX,int layerY,int layerW,int layerH,boolean layerSet) {
+    Slot(String slotnum,color slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotstate,int layerX,int layerY,int layerW,int layerH,boolean layerSet) 
+    
+    {
         
-        num = slotnum;
+        slotNum = slotnum;
         sC = slotcol;
         sX = slotx;
         sY = sloty;
         sW = slotw;
         sH = sloth;
-        state = slotstate;
-        lX = layerX;
-        lY = layerY;
-        lW = layerW;
-        lH = layerH;
-        lset = layerSet;
+        slotState = slotstate;
+        layX = layerX;
+        layY = layerY;
+        layW = layerW;
+        layH = layerH;
+        layer = layerSet;
             
     }
 
-    void gradientRect(int x, int y, int w, int h, color gradC1, color gradC2) {
+    void gradientRect(int x, int y, int w, int h, color gradC1, color gradC2) 
+    
+    {
         beginShape();
         fill(gradC1);
         vertex(x,y);
@@ -78,11 +82,13 @@ class Slot
         vertex(x+w,y+h);
         vertex(x+w,y);
         endShape();
-}
+    }
     
-    void display() { // display slots
+    void display() 
+    
+    { // display slots
 
-        if (state == true) 
+        if (slotState == true) // slot is active
         
         {
             // fill(59,70,84);
@@ -92,7 +98,7 @@ class Slot
             textSize(20);
             textAlign(CENTER);
             fill(#fefefe);
-            text(num, sX, (sY + 14), sW, sH);
+            text(slotNum, sX, (sY + 14), sW, sH);
             
             stroke(150,164,181);
             line(sX+1,sY+39,sX+39,sY+39);
@@ -109,14 +115,11 @@ class Slot
             stroke(27,30,33);
             line(sX+2,sY+2,sX+2,sY+38);
             line(sX+2,sY+2,sX+38,sY+2);
-
-
             stroke(96);
-
 
         } 
         
-        if (state == false) 
+        if (slotState == false) // slot is inactive
         
         {
             fill(sC);   
@@ -124,10 +127,12 @@ class Slot
             textSize(20);
             textAlign(CENTER);
             fill(#575757);
-            text(num, sX, (sY + 13), sW, sH);
+            text(slotNum, sX, (sY + 13), sW, sH);
         }
 
-        if (mouseX > sX && mouseX < sX+40 && mouseY > sY && mouseY < sY+40 && state == false) {
+        if (mouseX > sX && mouseX < sX+40 && mouseY > sY && mouseY < sY+40 && slotState == false) // slot rollovers
+        
+        { // 
             fill(255);   
             rect(sX,sY,sW,sH);
             stroke(150,164,181);
@@ -147,61 +152,67 @@ class Slot
             textSize(20);
             textAlign(CENTER);
             fill(#575757);
-            text(num, sX, (sY + 14), sW, sH);
+            text(slotNum, sX, (sY + 14), sW, sH);
 
 
         
-        if (mousePressed == true && state == false)
+            if (mousePressed == true && slotState == false) // slot off, mouse pressed
+        
+            {
+                gradC1 = (59,70,84);
+                gradC2 = (73,87,105);
+                gradientRect(sX,sY,sW,sH,gradC1,gradC2);
+                textSize(20);
+                textAlign(CENTER);
+                fill(#f2f2f2);
+                text(slotNum, sX, (sY + 14), sW, sH);
+                stroke(150,164,181);
+                line(sX+1,sY+39,sX+39,sY+39);
+                line(sX+39,sY+1,sX+39,sY+39);
+            
+                stroke(15);
+                line(sX+1,sY+1,sX+1,sY+39);
+                line(sX+1,sY+1,sX+39,sY+1);
+            
+                stroke(27,30,33);
+                line(sX+2,sY+2,sX+2,sY+38);
+                line(sX+2,sY+2,sX+38,sY+2);
+
+                stroke(96);
+            }
+
+
+
+        }
+
+        if (selectState[2] && s1.slotState == true && s1.layerSet == true && c1.cSS == true) // save layer to active slot
         
         {
-            gradC1 = (59,70,84);
-            gradC2 = (73,87,105);
-            gradientRect(sX,sY,sW,sH,gradC1,gradC2);
-            textSize(20);
-            textAlign(CENTER);
-            fill(#f2f2f2);
-            text(num, sX, (sY + 14), sW, sH);
-            stroke(150,164,181);
-            line(sX+1,sY+39,sX+39,sY+39);
-            line(sX+39,sY+1,sX+39,sY+39);
+            println("slot layer seems to be saved");        
+            fill(#ffc899, 128);
+            rectMode(Processing.CORNER);
+            rect(layX,layY,layW,layH);
             
-            stroke(15);
-            line(sX+1,sY+1,sX+1,sY+39);
-            line(sX+1,sY+1,sX+39,sY+1);
-            
-            stroke(27,30,33);
-            line(sX+2,sY+2,sX+2,sY+38);
-            line(sX+2,sY+2,sX+38,sY+2);
-
-            stroke(96);
         }
-        
-
-        
-        
-        else {
-        }
-        
-    }
-        
 
     }
-    
 }
 
-class ControlPanel 
+class ControlPanel // cPanel
 
 {
 
     int cX,cY,cW,cH; // controlPanel button co-ordinates
-    boolean cS; // state of controlPanel button
+    boolean cS; // layer save 
+    boolean cSS; // save visibility
 
-    ControlPanel(int controlX, int controlY,int controlW,int controlH, boolean controlS) {
+    ControlPanel(int controlX, int controlY,int controlW,int controlH, boolean controlS, boolean controlSaveShown) {
         cX = controlX;
         cY = controlY;
         cW = controlW;
         cH = controlH;
         cS = controlS;
+        cSS = controlSaveShown;
     }
 
 
@@ -220,9 +231,9 @@ class ControlPanel
 
         }
         
-        if (c1.cS == true) 
+        if (c1.cS == true && c1.cSS == true) 
         
-        { // save is on
+        { // save is on and visible
             translate(0,0);        
             fill(#646464);   
             rect(c1.cX,c1.cY,c1.cW,c1.cH);
@@ -258,11 +269,10 @@ class ControlPanel
         }
 
 
-        // button hovers
+        // hovers on buttons
         
-        if (mouseX > cX && mouseX < cX+40 && mouseY > cY && mouseY < cY+40 && c1.cS == true) 
-        
-        {
+        if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && c1.cS == true) 
+        { // 
             stroke(150,164,181);
             line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
             line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
@@ -272,7 +282,6 @@ class ControlPanel
             stroke(44,49,54);
             line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
            
-           
             line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
             line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
             stroke(150,164,181);
@@ -281,6 +290,7 @@ class ControlPanel
             stroke(27,30,33);
             line(cX+1,cY+1,cX+1,cY+39);
             line(cX+1,cY+1,cX+39,cY+1);
+            
             stroke(255);
             fill(255);
             rect(offset+100,offset+623,30,30); 
@@ -291,7 +301,7 @@ class ControlPanel
         
         if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cS == false) 
         
-        {
+        { // hover before first click to 'save layer'
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
             line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
@@ -314,7 +324,7 @@ class ControlPanel
 
         if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cS == true) 
         
-        {
+        { // hover after layer is saved - layer visibility!
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
             line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
@@ -338,7 +348,7 @@ class ControlPanel
 
         }
 
-                // mouse press effects
+        // mousePress effects - this is the inbetween for the button
         if (mousePressed == true && c1.cS == false)
         
         {
@@ -367,7 +377,6 @@ class ControlPanel
 
             image(saveShow,c1.cX+5,c1.cY+6,30,30);
             }        
-
         }
 
         if (mousePressed == true && c1.cS == true)
@@ -376,7 +385,7 @@ class ControlPanel
         
             if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) 
 
-            {
+            { // save slot 
                 
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -397,8 +406,11 @@ class ControlPanel
             stroke(96);
             }
         
-        
-        if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40){
+
+            if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40)
+            
+            { // clear slot
+            
             fill(#646464);   
             rect(c2.cX,c2.cY,c2.cW,c2.cH);
               
@@ -424,15 +436,36 @@ class ControlPanel
             rect(offset+100,offset+623,30,30); 
             image(clearOn,c2.cX+5,c2.cY+6,30,30);
             stroke(96);
+
             }
         }
 
-        
         
     }
 
 
 }
+
+/* cPanel
+1) cPanel save off = c1.cS false
+2) cPanel save on, visible = c1.cSS true, c1.cS true
+3) cPanel save on, not visible = c1.cSS false
+
+Slots
+1) slot number = slotNum
+2) slot active = slotState (true,false)
+3) slot layer has been set = layerSet (true,false)
+4) layer co-ordinates = layX,layY,layW,layH
+
+so, when s1 is active (slotState = true), then cPanel save is switched on (cS = true), layer co-ordinates need to be saved to LayX,Y,W,H, and layerSet is set to true. Default is then cSS true, as well, since they are visible. Then another switch on cP save switches cSS to false (white ON button) to remove visibility. Clear then sets layX,Y,W,H to 0 and turns the switches layerSet off. 
+
+1) layer is selected: layers(), & mouseClicked()
+2) save button is pressed: cPanel display()
+3) slot display() needs to update with layer visibility
+4) save button is pressed again to hide visibily of active slot
+5) when slot is not active, save returns to normal
+6) save has to be linked to active slot. Must store save values if layerSet is true.  
+*/  
 
 void setupControls() 
 
@@ -447,8 +480,8 @@ void setupControls()
     s8 = new Slot("8",255,(offset+335),(offset+572),40,40,false,0,0,0,0,false);
     s9 = new Slot("9",255,(offset+375),(offset+572),40,40,false,0,0,0,0,false);
     s10 = new Slot("10",255,(offset+415),(offset+572),40,40,false,0,0,0,0,false);
-    c1 = new ControlPanel((offset+55),(offset+617),40,40,false);
-    c2 = new ControlPanel((offset+95),(offset+617),40,40,false);
+    c1 = new ControlPanel((offset+55),(offset+617),40,40,false,false);
+    c2 = new ControlPanel((offset+95),(offset+617),40,40,false,false);
     
 }
 
@@ -495,6 +528,9 @@ void layers()
     }
 }
 
+
+
+
 void mouseClicked() 
 
 {
@@ -518,7 +554,8 @@ void mouseClicked()
         println("Console log.");
         println("left/right offset: " + offset);
         println("sX: " + s1.sX + ". sY: " + s1.sY + ". Status: " + s1.stat + ". sW: " + s1.sW + ". sH: " + s1.sH +  ". C: " + s1.c);
-        println("layer X: " + s1.lX + "; layer Y: " + s1.lY + "; layer width: " + s1.lW + "; layer height: " + s1.lH);
+        println("layer X: " + s1.layX + "; layer Y: " + s1.layY + "; layer width: " + s1.layW + "; layer height: " + s1.layH);
+        println("cPanel save active: " + c1.cS + "; save visible: " + c1.cSS + "; slot layer set: " + s1.layerSet + "; slot 1 is active: " + s1.slotState);
     }
 
     // SELECT LAYER 
@@ -575,187 +612,209 @@ void mouseClicked()
     //SLOT SELECTION
     if (mouseX > s1.sX && mouseX < s1.sX+40 && mouseY > s1.sY && mouseY < s1.sY+40){ // slots
 
-        if (s1.state == false) {
-                s1.state = true;
-                s2.state = false;
-                s3.state = false;
-                s4.state = false;
-                s5.state = false;
-                s6.state = false;
-                s7.state = false;
-                s8.state = false;
-                s9.state = false;
-                s10.state = false;
+        if (s1.slotState == false) {
+                s1.slotState = true;
+                s2.slotState = false;
+                s3.slotState = false;
+                s4.slotState = false;
+                s5.slotState = false;
+                s6.slotState = false;
+                s7.slotState = false;
+                s8.slotState = false;
+                s9.slotState = false;
+                s10.slotState = false;
         }
 
-        if (s1.state == true) {
-
-            if (endSelectX < startSelectX){
-                    swap = endSelectX;
-                    endSelectX = startSelectX;
-                    startSelectX = swap;
-                }
-                
-                if (endSelectY < startSelectY){
-                    swap = endSelectY;
-                    endSelectY = startSelectY;
-                    startSelectY = swap;
-                }
-
-            s1.lX = (floor((startSelectX - offset) / gridSize) * gridSize) + offset;
-            
-            s1.lY = (floor((startSelectY - offset) / gridSize) * gridSize) + offset;
-            
-            s1.lW = ((ceil((endSelectX - offset) / gridSize) * gridSize)) - ((floor((startSelectX - offset) / gridSize) * gridSize));
-            
-            s1.lH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
-
-        }
-    
     }
     if (mouseX > s2.sX && mouseX < s2.sX+40 && mouseY > s2.sY && mouseY < s2.sY+40){ // slots
         
-        if (s2.state == false) {
-                s1.state = false;
-                s2.state = true;
-                s3.state = false;
-                s4.state = false;
-                s5.state = false;
-                s6.state = false;
-                s7.state = false;
-                s8.state = false;
-                s9.state = false;
-                s10.state = false;
+        if (s2.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = true;
+                s3.slotState = false;
+                s4.slotState = false;
+                s5.slotState = false;
+                s6.slotState = false;
+                s7.slotState = false;
+                s8.slotState = false;
+                s9.slotState = false;
+                s10.slotState = false;
         }
     }    
     if (mouseX > s3.sX && mouseX < s3.sX+40 && mouseY > s3.sY && mouseY < s3.sY+40){ // slots
         
-        if (s3.state == false) {
-                s1.state = false;
-                s2.state = false;
-                s3.state = true;
-                s4.state = false;
-                s5.state = false;
-                s6.state = false;
-                s7.state = false;
-                s8.state = false;
-                s9.state = false;
-                s10.state = false;
+        if (s3.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = false;
+                s3.slotState = true;
+                s4.slotState = false;
+                s5.slotState = false;
+                s6.slotState = false;
+                s7.slotState = false;
+                s8.slotState = false;
+                s9.slotState = false;
+                s10.slotState = false;
         }
     }    
     if (mouseX > s4.sX && mouseX < s4.sX+40 && mouseY > s4.sY && mouseY < s4.sY+40){ // slots
         
-        if (s4.state == false) {
-                s1.state = false;
-                s2.state = false;
-                s3.state = false;
-                s4.state = true;
-                s5.state = false;
-                s6.state = false;
-                s7.state = false;
-                s8.state = false;
-                s9.state = false;
-                s10.state = false;
+        if (s4.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = false;
+                s3.slotState = false;
+                s4.slotState = true;
+                s5.slotState = false;
+                s6.slotState = false;
+                s7.slotState = false;
+                s8.slotState = false;
+                s9.slotState = false;
+                s10.slotState = false;
         }
     }
     if (mouseX > s5.sX && mouseX < s5.sX+40 && mouseY > s5.sY && mouseY < s5.sY+40){ // slots
         
-        if (s5.state == false) {
-                s1.state = false;
-                s2.state = false;
-                s3.state = false;
-                s4.state = false;
-                s5.state = true;
-                s6.state = false;
-                s7.state = false;
-                s8.state = false;
-                s9.state = false;
-                s10.state = false;
+        if (s5.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = false;
+                s3.slotState = false;
+                s4.slotState = false;
+                s5.slotState = true;
+                s6.slotState = false;
+                s7.slotState = false;
+                s8.slotState = false;
+                s9.slotState = false;
+                s10.slotState = false;
         }
     }
     if (mouseX > s6.sX && mouseX < s6.sX+40 && mouseY > s6.sY && mouseY < s6.sY+40){ // slots
         
-        if (s6.state == false) {
-                s1.state = false;
-                s2.state = false;
-                s3.state = false;
-                s4.state = false;
-                s5.state = false;
-                s6.state = true;
-                s7.state = false;
-                s8.state = false;
-                s9.state = false;
-                s10.state = false;
+        if (s6.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = false;
+                s3.slotState = false;
+                s4.slotState = false;
+                s5.slotState = false;
+                s6.slotState = true;
+                s7.slotState = false;
+                s8.slotState = false;
+                s9.slotState = false;
+                s10.slotState = false;
         }
     }
     if (mouseX > s7.sX && mouseX < s7.sX+40 && mouseY > s7.sY && mouseY < s7.sY+40){ // slots
         
 
-        if (s7.state == false) {
-                s1.state = false;
-                s2.state = false;
-                s3.state = false;
-                s4.state = false;
-                s5.state = false;
-                s6.state = false;
-                s7.state = true;
-                s8.state = false;
-                s9.state = false;
-                s10.state = false;
+        if (s7.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = false;
+                s3.slotState = false;
+                s4.slotState = false;
+                s5.slotState = false;
+                s6.slotState = false;
+                s7.slotState = true;
+                s8.slotState = false;
+                s9.slotState = false;
+                s10.slotState = false;
         }
     }
     if (mouseX > s8.sX && mouseX < s8.sX+40 && mouseY > s8.sY && mouseY < s8.sY+40){ // slots
         
 
-        if (s8.state == false) {
-                s1.state = false;
-                s2.state = false;
-                s3.state = false;
-                s4.state = false;
-                s5.state = false;
-                s6.state = false;
-                s7.state = false;
-                s8.state = true;
-                s9.state = false;
-                s10.state = false;
+        if (s8.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = false;
+                s3.slotState = false;
+                s4.slotState = false;
+                s5.slotState = false;
+                s6.slotState = false;
+                s7.slotState = false;
+                s8.slotState = true;
+                s9.slotState = false;
+                s10.slotState = false;
         }
     }
     if (mouseX > s9.sX && mouseX < s9.sX+40 && mouseY > s9.sY && mouseY < s9.sY+40){ // slots
         
 
-        if (s9.state == false) {
-                s1.state = false;
-                s2.state = false;
-                s3.state = false;
-                s4.state = false;
-                s5.state = false;
-                s6.state = false;
-                s7.state = false;
-                s8.state = false;
-                s9.state = true;
-                s10.state = false;
+        if (s9.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = false;
+                s3.slotState = false;
+                s4.slotState = false;
+                s5.slotState = false;
+                s6.slotState = false;
+                s7.slotState = false;
+                s8.slotState = false;
+                s9.slotState = true;
+                s10.slotState = false;
         }
     }
     if (mouseX > s10.sX && mouseX < s10.sX+40 && mouseY > s10.sY && mouseY < s10.sY+40){ // slots
         
-        if (s10.state == false) {
-                s1.state = false;
-                s2.state = false;
-                s3.state = false;
-                s4.state = false;
-                s5.state = false;
-                s6.state = false;
-                s7.state = false;
-                s8.state = false;
-                s9.state = false;
-                s10.state = true;
+        if (s10.slotState == false) {
+                s1.slotState = false;
+                s2.slotState = false;
+                s3.slotState = false;
+                s4.slotState = false;
+                s5.slotState = false;
+                s6.slotState = false;
+                s7.slotState = false;
+                s8.slotState = false;
+                s9.slotState = false;
+                s10.slotState = true;
         }
     }  
+    
+    /* cPanel
+1) cPanel save off = c1.cS false
+2) cPanel save on, visible = c1.cSS true, c1.cS true
+3) cPanel save on, not visible = c1.cSS false
+
+Slots
+1) slot number = slotNum
+2) slot active = slotState (true,false)
+3) slot layer has been set = layerSet (true,false)
+4) layer co-ordinates = layX,layY,layW,layH
+
+so, when s1 is active (slotState = true), then cPanel save is switched on (cS = true), layer co-ordinates need to be saved to LayX,Y,W,H, and layerSet is set to true. Default is then cSS true, as well, since they are visible. Then another switch on cP save switches cSS to false (white ON button) to remove visibility. Clear then sets layX,Y,W,H to 0 and turns the switches layerSet off. 
+
+1) layer is selected: layers(), & mouseClicked()
+2) save button is pressed: cPanel display()
+3) slot number needs to be known and various switches turned on or off
+4) save button is pressed again to hide visibily of active slot
+5) when slot is not active, save returns to normal
+6) save has to be linked to active slot. Must store save values if layerSet is true.  */
+    
+    
     if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) {
-        if (c1.cS == false) {
+
+        if (s1.slotState == true && selectState[2] && c1.cS == false) {
+
+            if (endSelectX < startSelectX){
+                    swap = endSelectX;
+                    endSelectX = startSelectX;
+                    startSelectX = swap;
+            }
+                
+            if (endSelectY < startSelectY){
+                    swap = endSelectY;
+                    endSelectY = startSelectY;
+                    startSelectY = swap;
+            }
+
+            s1.layX = (floor((startSelectX - offset) / gridSize) * gridSize) + offset;
+            
+            s1.layY = (floor((startSelectY - offset) / gridSize) * gridSize) + offset;
+            
+            s1.layW = ((ceil((endSelectX - offset) / gridSize) * gridSize)) - ((floor((startSelectX - offset) / gridSize) * gridSize));
+            
+            s1.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
+            s1.layerSet = true; // now display save layer if cSS is visible cPanel display()
             c1.cS = true;
-            c2.cS = false;
+            c1.cSS = true;
+            
         }
+        
     }
     if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40) {
     
