@@ -91,13 +91,25 @@ class Slot
             textSize(20);
             textAlign(CENTER);
             fill(#fefefe);
-            text(num, sX, (sY + 13), sW, sH);
+            text(num, sX, (sY + 14), sW, sH);
+            
             stroke(150,164,181);
             line(sX+1,sY+39,sX+39,sY+39);
             line(sX+39,sY+1,sX+39,sY+39);
-            stroke(27,30,33);
+
+            stroke(120);
+            line(sX+2,sY+38,sX+38,sY+38);
+            line(sX+38,sY+2,sX+38,sY+38);
+            
+            stroke(15);
             line(sX+1,sY+1,sX+1,sY+39);
             line(sX+1,sY+1,sX+39,sY+1);
+            
+            stroke(27,30,33);
+            line(sX+2,sY+2,sX+2,sY+38);
+            line(sX+2,sY+2,sX+38,sY+2);
+
+
             stroke(96);
 
 
@@ -120,14 +132,21 @@ class Slot
             stroke(150,164,181);
             line(sX+1,sY+39,sX+39,sY+39);
             line(sX+39,sY+1,sX+39,sY+39);
-            stroke(27,30,33);
+            
+            stroke(15);
             line(sX+1,sY+1,sX+1,sY+39);
             line(sX+1,sY+1,sX+39,sY+1);
+            
+            stroke(27,30,33);
+            line(sX+2,sY+2,sX+2,sY+38);
+            line(sX+2,sY+2,sX+38,sY+2);
+
+
             stroke(96);
             textSize(20);
             textAlign(CENTER);
-            fill(#171717);
-            text(num, sX, (sY + 13), sW, sH);
+            fill(#575757);
+            text(num, sX, (sY + 14), sW, sH);
 
 
         
@@ -140,13 +159,19 @@ class Slot
             textSize(20);
             textAlign(CENTER);
             fill(#f2f2f2);
-            text(num, sX, (sY + 13), sW, sH);
+            text(num, sX, (sY + 14), sW, sH);
             stroke(150,164,181);
             line(sX+1,sY+39,sX+39,sY+39);
             line(sX+39,sY+1,sX+39,sY+39);
-            stroke(27,30,33);
+            
+            stroke(15);
             line(sX+1,sY+1,sX+1,sY+39);
             line(sX+1,sY+1,sX+39,sY+1);
+            
+            stroke(27,30,33);
+            line(sX+2,sY+2,sX+2,sY+38);
+            line(sX+2,sY+2,sX+38,sY+2);
+
             stroke(96);
         }
         
@@ -200,14 +225,26 @@ class ControlPanel
             translate(0,0);        
             fill(#646464);   
             rect(c1.cX,c1.cY,c1.cW,c1.cH);
+            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
             line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
-            stroke(27,30,33);
+            
+            stroke(120);
+            line(c1.cX+2,c1.cY+38,c1.cX+38,c1.cY+38);
+            line(c1.cX+38,c1.cY+2,c1.cX+38,c1.cY+38);
+            
+            stroke(15);
             line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            stroke(44,49,54);
+            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+           
+           
             line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+
             stroke(96);
-            image(save_on,c1.cX+5,c1.cY+5,30,30);
+            image(save_on,c1.cX+5,c1.cY+6,30,30);
 
         }
         
@@ -219,43 +256,6 @@ class ControlPanel
             image(clear,offset+100,offset+623,30,30);
         }
 
-        // mouse press effects
-        if (mousePressed == true && c1.cS == false)
-        
-        {
-            if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) 
-
-            {
-            fill(#646464);   
-            rect(c1.cX,c1.cY,c1.cW,c1.cH);
-            stroke(150,164,181);
-            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
-            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
-            stroke(27,30,33);
-            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
-            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
-            stroke(96);
-            image(save_on,c1.cX+5,c1.cY+5,30,30);
-            }        
-
-        }
-
-        if (mousePressed == true && c1.cS == true)
-        
-        {
-            if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40){
-                fill(#646464);   
-                rect(c2.cX,c2.cY,c2.cW,c2.cH);
-                stroke(150,164,181);
-                line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
-                line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
-                stroke(27,30,33);
-                line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
-                line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
-                stroke(96);
-                image(clear_on,c2.cX+5,c2.cY+5,30,30);
-            }
-        }
 
         // button hovers
         
@@ -263,11 +263,31 @@ class ControlPanel
         
         {
             stroke(150,164,181);
+            line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+            line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+            
+            stroke(120);
+            line(c2.cX+2,c2.cY+38,c2.cX+38,c2.cY+38);
+            line(c2.cX+38,c2.cY+2,c2.cX+38,c2.cY+38);
+            
+            stroke(15);
+            line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+            stroke(44,49,54);
+            line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+           
+           
+            line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+            line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+            stroke(150,164,181);
             line(cX+1,cY+39,cX+39,cY+39);
             line(cX+39,cY+1,cX+39,cY+39);
             stroke(27,30,33);
             line(cX+1,cY+1,cX+1,cY+39);
             line(cX+1,cY+1,cX+39,cY+1);
+            stroke(255);
+            fill(255);
+            rect(offset+100,offset+623,30,30); 
+            image(clear,offset+100,offset+624,30,30);
             stroke(96);
 
         }
@@ -278,12 +298,86 @@ class ControlPanel
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
             line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
-            stroke(27,30,33);
+            
+            stroke(15);
             line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            stroke(44,49,54);
+            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+           
+           
             line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+            stroke(255);
+            fill(255);
+            rect(offset+60,offset+623,30,30); 
+            image(save,offset+60,offset+624,30,30); 
             stroke(96);
 
         }
+
+                // mouse press effects
+        if (mousePressed == true && c1.cS == false)
+        
+        {
+            if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) 
+
+            {
+            fill(#646464);   
+            rect(c1.cX,c1.cY,c1.cW,c1.cH);
+            
+            stroke(150,164,181);
+            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+            
+            stroke(120);
+            line(c1.cX+2,c1.cY+38,c1.cX+38,c1.cY+38);
+            line(c1.cX+38,c1.cY+2,c1.cX+38,c1.cY+38);
+            
+            stroke(15);
+            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            stroke(44,49,54);
+            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+           
+            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+            
+            image(save_on,c1.cX+5,c1.cY+6,30,30);
+            }        
+
+        }
+
+        if (mousePressed == true && c1.cS == true)
+        
+        {
+        if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40){
+            fill(#646464);   
+            rect(c2.cX,c2.cY,c2.cW,c2.cH);
+              
+            stroke(150,164,181);
+            line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+            line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+          
+            stroke(120);
+            line(c2.cX+2,c2.cY+38,c2.cX+38,c2.cY+38);
+            line(c2.cX+38,c2.cY+2,c2.cX+38,c2.cY+38);
+            
+            stroke(15);
+            line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+            stroke(44,49,54);
+            line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+         
+           
+            line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+            line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+                
+            stroke(#646464);
+            fill(#646464);
+            rect(offset+100,offset+623,30,30); 
+            image(clear_on,c2.cX+5,c2.cY+6,30,30);
+            stroke(96);
+            }
+        }
+
         
         
     }
