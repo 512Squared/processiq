@@ -895,7 +895,7 @@ void saveShowHideDraw()
 
     }
 
-    if (s3.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s3.saveVisible == true && c1.cSaved == true && c1.saveVisible == true) 
     
     { // s3.save is on and visible
         translate(0,0);        
@@ -921,11 +921,9 @@ void saveShowHideDraw()
 
         stroke(96);
         image(saveShow,c1.cX+5,c1.cY+6,30,30);
-
     }
     
-    if (s3.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
-
+    if (s3.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
     { //  s3.save is on, but invisible
 
         translate(0,0);        
@@ -954,7 +952,7 @@ void saveShowHideDraw()
 
     }
 
-    else if (c1.cSaved == true && c1.saveVisible == true && s4.saveVisible == true)  
+    if (s4.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
     
     { // s4.save is on and visible
         translate(0,0);        
@@ -983,7 +981,7 @@ void saveShowHideDraw()
 
     }
     
-    else if (c1.cSaved == true && c1.saveVisible == false && s4.saveVisible == false)
+    if (s4.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
 
     { //  s4.save is on, but invisible
 
@@ -1013,7 +1011,7 @@ void saveShowHideDraw()
 
     }
 
-    else if (c1.cSaved == true && c1.saveVisible == true && s5.saveVisible == true)  
+    if (s5.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
     
     { // s5.save is on and visible
         translate(0,0);        
@@ -1042,7 +1040,7 @@ void saveShowHideDraw()
 
     }
     
-    else if (c1.cSaved == true && c1.saveVisible == false && s5.saveVisible == false)
+    if (s5.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
 
     { //  s5.save is on, but invisible
 
@@ -1072,7 +1070,7 @@ void saveShowHideDraw()
 
     }
 
-    else if (c1.cSaved == true && c1.saveVisible == true && s6.saveVisible == true)  
+    if (s6.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
     
     { // s6.save is on and visible
         translate(0,0);        
@@ -1101,7 +1099,7 @@ void saveShowHideDraw()
 
     }
     
-    else if (c1.cSaved == true && c1.saveVisible == false && s6.saveVisible == false)
+    if (s6.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
 
     { //  s6.save is on, but invisible
 
@@ -1131,8 +1129,7 @@ void saveShowHideDraw()
 
     }
 
-
-    else if (c1.cSaved == true && c1.saveVisible == true && s7.saveVisible == true)  
+    if (s7.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
     
     { // s7.save is on and visible
         translate(0,0);        
@@ -1161,7 +1158,7 @@ void saveShowHideDraw()
 
     }
     
-    else if (c1.cSaved == true && c1.saveVisible == false && s7.saveVisible == false)
+    if (s7.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
 
     { //  s7.save is on, but invisible
 
@@ -1191,8 +1188,7 @@ void saveShowHideDraw()
 
     }
 
-
-    else if (c1.cSaved == true && c1.saveVisible == true && s8.saveVisible == true)  
+    if (s8.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
     
     { // s8.save is on and visible
         translate(0,0);        
@@ -1221,7 +1217,7 @@ void saveShowHideDraw()
 
     }
     
-    else if (c1.cSaved == true && c1.saveVisible == false && s8.saveVisible == false)
+    if (s8.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
 
     { //  s8.save is on, but invisible
 
@@ -1251,7 +1247,7 @@ void saveShowHideDraw()
 
     }
 
-    else if (c1.cSaved == true && c1.saveVisible == true && s9.saveVisible == true)  
+    if (s9.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
     
     { // s9.save is on and visible
         translate(0,0);        
@@ -1280,7 +1276,7 @@ void saveShowHideDraw()
 
     }
     
-    else if (c1.cSaved == true && c1.saveVisible == false && s9.saveVisible == false)
+    if (s9.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
 
     { //  s9.save is on, but invisible
 
@@ -1308,7 +1304,9 @@ void saveShowHideDraw()
         stroke(96);
         image(saveHidden,c1.cX+5,c1.cY+6,30,30);
 
-    }    else if (c1.cSaved == true && c1.saveVisible == true && s10.saveVisible == true)  
+    }    
+    
+    if (s10.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
     
     { // s10.save is on and visible
         translate(0,0);        
@@ -1337,7 +1335,7 @@ void saveShowHideDraw()
 
     }
     
-    else if (c1.cSaved == true && c1.saveVisible == false && s10.saveVisible == false)
+    if (s10.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
 
     { //  s10.save is on, but invisible
 
@@ -2641,16 +2639,16 @@ void slotSaveMouseClicks()
 
 {  // all click events for cPanel save buttons 
         
-    if (c1.cSaved == true && s1.layerSet == true && c1.saveVisible == false && s1.saveVisible == false) 
+    if (s1.saveVisible == false && c1.cSaved == true && s1.layerSet == true && c1.saveVisible == false) 
         
     { // s1.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s1.saveVisible = true;
+        c1.saveVisible = true; // this is for the button draw
+        s1.saveVisible = true; // this is for the layer draw
 
     }
         
-    else if (c1.cSaved == true && s1.layerSet == true && c1.saveVisible == true && s1.saveVisible == true) 
+    else if (s1.saveVisible == true && c1.cSaved == true && s1.layerSet == true && c1.saveVisible == true) 
     
     { // s1.switch save visibility to off, from on
             
@@ -2658,7 +2656,7 @@ void slotSaveMouseClicks()
         s1.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (s1.slotOn == true && layerSelect == selectState[2] && c1.cSaved == false && readyToSave == true) 
+    if (s1.slotOn == true && layerSelect == selectState[2] && c1.cSaved == false && readyToSave == true) 
     
     {  // s1.on click, get values for layer save
 
@@ -2699,7 +2697,7 @@ void slotSaveMouseClicks()
             
     }
 
-    if (c1.cSaved == true && s2.layerSet == true && c1.saveVisible == false && s2.saveVisible == false) 
+    if (s2.saveVisible == false && c1.cSaved == true && s2.layerSet == true && c1.saveVisible == false) 
         
     { // s2.switch save visibility to on, from off
              
@@ -2708,7 +2706,7 @@ void slotSaveMouseClicks()
 
     }
         
-    else if (c1.cSaved == true && s2.layerSet == true && c1.saveVisible == true && s2.saveVisible == true) 
+    else if (s2.saveVisible == true && c1.cSaved == true && s2.layerSet == true && c1.saveVisible == true) 
     
     { // s2.switch save visibility to off, from on
             
@@ -2716,7 +2714,7 @@ void slotSaveMouseClicks()
         s2.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s2.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s2.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
     
     {  // s2.on click, get values for layer save
 
@@ -2757,7 +2755,7 @@ void slotSaveMouseClicks()
             
     }
 
-    if (c1.cSaved == true && s3.layerSet == true && c1.saveVisible == false && s3.saveVisible == false) 
+    if (s3.saveVisible == false && c1.cSaved == true && s3.layerSet == true && c1.saveVisible == false) 
         
     { // s3.switch save visibility to on, from off
              
@@ -2766,7 +2764,7 @@ void slotSaveMouseClicks()
 
     }
         
-    else if (c1.cSaved == true && s3.layerSet == true && c1.saveVisible == true && s3.saveVisible == true) 
+    else if (s3.saveVisible == true && c1.cSaved == true && s3.layerSet == true && c1.saveVisible == true) 
     
     { // s3.switch save visibility to off, from on
             
@@ -2774,7 +2772,7 @@ void slotSaveMouseClicks()
         s3.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s3.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s3.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
     
     {  // s3.on click, get values for layer save
 
@@ -2815,7 +2813,7 @@ void slotSaveMouseClicks()
             
     }
 
-    if (c1.cSaved == true && s4.layerSet == true && c1.saveVisible == false && s4.saveVisible == false) 
+    if (s4.saveVisible == false && c1.cSaved == true && s4.layerSet == true && c1.saveVisible == false) 
         
     { // s4.switch save visibility to on, from off
              
@@ -2824,7 +2822,7 @@ void slotSaveMouseClicks()
 
     }
         
-    else if (c1.cSaved == true && s4.layerSet == true && c1.saveVisible == true && s4.saveVisible == true) 
+    else if (s4.saveVisible == true && c1.cSaved == true && s4.layerSet == true && c1.saveVisible == true) 
     
     { // s4.switch save visibility to off, from on
             
@@ -2832,7 +2830,7 @@ void slotSaveMouseClicks()
         s4.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s4.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s4.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
     
     {  // s4.on click, get values for layer save
 
@@ -2873,7 +2871,7 @@ void slotSaveMouseClicks()
             
     }
 
-    if (c1.cSaved == true && s5.layerSet == true && c1.saveVisible == false && s5.saveVisible == false) 
+    if (s5.saveVisible == false && c1.cSaved == true && s5.layerSet == true && c1.saveVisible == false) 
         
     { // s5.switch save visibility to on, from off
              
@@ -2882,7 +2880,7 @@ void slotSaveMouseClicks()
 
     }
         
-    else if (c1.cSaved == true && s5.layerSet == true && c1.saveVisible == true && s5.saveVisible == true) 
+    else if (s5.saveVisible == true && c1.cSaved == true && s5.layerSet == true && c1.saveVisible == true) 
     
     { // s5.switch save visibility to off, from on
             
@@ -2890,16 +2888,16 @@ void slotSaveMouseClicks()
         s5.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s5.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s5.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s5.on click, get values for layer save
 
         if (endSelectX < startSelectX)
         
         {
-                    swap = endSelectX;
-                    endSelectX = startSelectX;
-                    startSelectX = swap;
+            swap = endSelectX;
+            endSelectX = startSelectX;
+            startSelectX = swap;
         }
                 
         if (endSelectY < startSelectY)
@@ -2931,7 +2929,7 @@ void slotSaveMouseClicks()
             
     }
     
-    if (c1.cSaved == true && s6.layerSet == true && c1.saveVisible == false && s6.saveVisible == false) 
+    if (s6.saveVisible == false && c1.cSaved == true && s6.layerSet == true && c1.saveVisible == false) 
         
     { // s6.switch save visibility to on, from off
              
@@ -2940,7 +2938,7 @@ void slotSaveMouseClicks()
 
     }
         
-    else if (c1.cSaved == true && s6.layerSet == true && c1.saveVisible == true && s6.saveVisible == true) 
+    else if (s6.saveVisible == true && c1.cSaved == true && s6.layerSet == true && c1.saveVisible == true) 
     
     { // s6.switch save visibility to off, from on
             
@@ -2948,16 +2946,16 @@ void slotSaveMouseClicks()
         s6.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s6.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s6.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s6.on click, get values for layer save
 
         if (endSelectX < startSelectX)
         
         {
-                    swap = endSelectX;
-                    endSelectX = startSelectX;
-                    startSelectX = swap;
+            swap = endSelectX;
+            endSelectX = startSelectX;
+            startSelectX = swap;
         }
                 
         if (endSelectY < startSelectY)
@@ -2988,8 +2986,8 @@ void slotSaveMouseClicks()
         readyToSave = false; 
             
     }
-
-    if (c1.cSaved == true && s7.layerSet == true && c1.saveVisible == false && s7.saveVisible == false) 
+    
+    if (s7.saveVisible == false && c1.cSaved == true && s7.layerSet == true && c1.saveVisible == false) 
         
     { // s7.switch save visibility to on, from off
              
@@ -2998,7 +2996,7 @@ void slotSaveMouseClicks()
 
     }
         
-    else if (c1.cSaved == true && s7.layerSet == true && c1.saveVisible == true && s7.saveVisible == true) 
+    else if (s7.saveVisible == true && c1.cSaved == true && s7.layerSet == true && c1.saveVisible == true) 
     
     { // s7.switch save visibility to off, from on
             
@@ -3006,7 +3004,7 @@ void slotSaveMouseClicks()
         s7.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s7.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s7.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s7.on click, get values for layer save
 
@@ -3047,7 +3045,7 @@ void slotSaveMouseClicks()
             
     }
 
-    if (c1.cSaved == true && s8.layerSet == true && c1.saveVisible == false && s8.saveVisible == false) 
+    if (s8.saveVisible == false && c1.cSaved == true && s8.layerSet == true && c1.saveVisible == false) 
         
     { // s8.switch save visibility to on, from off
              
@@ -3056,7 +3054,7 @@ void slotSaveMouseClicks()
 
     }
         
-    else if (c1.cSaved == true && s8.layerSet == true && c1.saveVisible == true && s8.saveVisible == true) 
+    else if (s8.saveVisible == true && c1.cSaved == true && s8.layerSet == true && c1.saveVisible == true) 
     
     { // s8.switch save visibility to off, from on
             
@@ -3064,7 +3062,7 @@ void slotSaveMouseClicks()
         s8.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s8.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s8.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s8.on click, get values for layer save
 
@@ -3122,7 +3120,7 @@ void slotSaveMouseClicks()
         s9.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s9.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s9.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s9.on click, get values for layer save
 
@@ -3180,7 +3178,7 @@ void slotSaveMouseClicks()
         s10.saveVisible = false; // controls the layer draw in the grid
     }
 
-    else if (c1.cSaved == false && s10.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (c1.cSaved == false && s10.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s10.on click, get values for layer save
 
