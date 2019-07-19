@@ -196,7 +196,7 @@ class Slot
 
         }
 
-        slotLayerShowHideDraw(); // (data stored, unique methods s1-s10 required)
+        slotLayerShowHideGridDraw(); // (data stored, unique methods s1-s10 required)
 
     }
 }
@@ -241,7 +241,7 @@ class ControlPanel // cPanel
             image(save,c1.cX+5,c1.cY+5,30,30); 
         }
         
-        saveShowHideDraw();
+        saveShowHideButtonDraw();
 
         // hover draws for buttons
         
@@ -336,7 +336,7 @@ class ControlPanel // cPanel
         
         { // save is currently on
         
-            mousePressedSaveHideShowDraw();
+         mousePressedShowHideButtonDraw();
         
         }
     }
@@ -489,7 +489,7 @@ void mouseClicked()
     
     { // cPanel save clicks for slots 1-10 
 
-        slotSaveMouseClicks();
+        saveButtonClicks();
         
     }
     
@@ -497,7 +497,7 @@ void mouseClicked()
     
     { // cPanel clear clicks for slots 1-10
     
-       slotClearMouseClicks();
+      clearButtonClicks();
 
     }
 
@@ -568,9 +568,9 @@ void mainGrid()
 // DRAWS AND CLICKS RELATED TO SLOT LAYERS
 
 
-void slotLayerShowHideDraw()
+void slotLayerShowHideGridDraw()
 
-{ // all draw functions to show & hide layers on slots
+{ // draw show & hide saved layers on grid
     
     if (s1.slotOn == true && s1.layerSet == true && c1.saveVisible == true && s1.saveVisible == true) // draw saved layer
         // s1.draw saved layer
@@ -773,9 +773,9 @@ void slotLayerShowHideDraw()
         }
 }
 
-void saveShowHideDraw() 
+void saveShowHideButtonDraw() 
 
-{ // save buttons draw, show and hide
+{ // draw show & hide buttons in cPanel
 
     if (s1.saveVisible == true && c1.cSaved == true && c1.saveVisible == true )  
     
@@ -1370,7 +1370,7 @@ void saveShowHideDraw()
 
 void hoverSaveButtonDraw()
 
-{ // hover on save button draw (data stored for slot status, so s1-s10)
+{ // draw hover on save button in cPanel (s1-s10)
 
         if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s1.saveVisible == true) 
         
@@ -1833,9 +1833,9 @@ void hoverSaveButtonDraw()
 
 }
 
-void mousePressedSaveHideShowDraw()
+void mousePressedShowHideButtonDraw()
 
-{  // Draw buttons for mousepress switching between visible and hidden layers
+{  // draw mousepressed for show & hide buttons in cPanel
 
     if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.saveVisible == false) 
 
@@ -2354,7 +2354,7 @@ void mousePressedSaveHideShowDraw()
 
 void slotSelectClicks() 
 
-{ // select save slot - feeds into mouseClicked()
+{ // click slot button to make active
     
     if (mouseX > s1.sX && mouseX < s1.sX+40 && mouseY > s1.sY && mouseY < s1.sY+40){ // slots
 
@@ -2635,9 +2635,9 @@ void slotSelectClicks()
     }     
 }
 
-void slotSaveMouseClicks() 
+void saveButtonClicks() 
 
-{  // all click events for cPanel save buttons 
+{  // click save button in cPanel 
         
     if (s1.saveVisible == false && c1.cSaved == true && s1.layerSet == true && c1.saveVisible == false) 
         
@@ -3220,9 +3220,9 @@ void slotSaveMouseClicks()
     }
 }
 
-void slotClearMouseClicks()
+void clearButtonClicks()
 
-{  // all click events for cPanel clear buttons 
+{  // click clear button in cPanel clear 
     if (c1.cSaved == true) { // clear all motherfucking values for the slot
            
         if (s1.slotOn == true){ // check which slot is active, change that slots values
