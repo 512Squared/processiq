@@ -1,4 +1,4 @@
-/* @pjs preload="images/save.png,images/clear.png,images/saveHidden.png,images/clearOn.png,images/saveShow.png"; */
+/* @pjs preload="images/save.png,images/clear.png,images/saveHide.png,images/clearOn.png,images/saveShow.png"; */
 
 var gridSize = 128; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
@@ -20,7 +20,7 @@ Slot s1, s2, s3, s4, s5, s6, s7, s8, s9, s10; // slots to save layers
 ControlPanel c1,c2; // command buttons: save, clear
 
 PImage save = loadImage("images/save.png");
-PImage saveHidden = loadImage("images/saveHidden.png");
+PImage saveHide = loadImage("images/saveHide.png");
 PImage saveShow = loadImage("images/saveShow.png");
 PImage clearOn = loadImage("images/clearOn.png");
 PImage clear = loadImage("images/clear.png"); // hover image
@@ -41,13 +41,6 @@ void draw() {
     boxOver(); 
 }
 
-    // switches for layerSet shown below: 
-    // if (selectState[2] && s*.slotOn == true && s*.layerSet == true && c1.saveVisible == true)
-
-    // layer draw is found in Slots.display
-    // cPanel actions found in mouseClicked 
-    // cPanel draw found in ControlPanel.display
-
 class Slot 
 
 {
@@ -55,14 +48,14 @@ class Slot
     String slotNum;
     color sC;
     int sX, sY, sW, sH;
-    boolean saveVisible;
+    boolean layerVisible;
     boolean slotOn;
     
     // store layer values in slots
     int layX,layY,layW,layH;
     boolean layerSet; 
     
-    Slot(String slotnum,color slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotsavevisible,boolean slotstate,int layerX,int layerY,int layerW,int layerH,boolean slotLayerSet) 
+    Slot(String slotnum,color slotcol,int slotx,int sloty,int slotw, int sloth,boolean slotlayervisible,boolean slotstate,int layerX,int layerY,int layerW,int layerH,boolean slotLayerSet) 
     
     {
         
@@ -72,7 +65,7 @@ class Slot
         sY = sloty;
         sW = slotw;
         sH = sloth;
-        saveVisible = slotsavevisible;
+        layerVisible = slotlayervisible;
         slotOn = slotstate;
         layX = layerX;
         layY = layerY;
@@ -192,11 +185,9 @@ class Slot
                 stroke(96);
             }
 
-
-
         }
 
-        slotLayerShowHideGridDraw(); // (data stored, unique methods s1-s10 required)
+        slotLayerShowHideDraw(); // draw slot buttons and grid layers
 
     }
 }
@@ -223,86 +214,30 @@ class ControlPanel // cPanel
     void display()  { // display controlPanel buttons
 
 
-        // buttons set on or off
-        
-        if (c2.cSaved == false && c1.cSaved == true) 
-        
-        { // draw clear icon for visible save
-            fill(255); 
-            rect(c2.cX,c2.cY,c2.cW,c2.cH);
-            image(clear,c2.cX+5,c2.cY+5,30,30);
-        }
+        clearButtonDraw();
 
-        if (c1.cSaved == false && layerSelect == selectState[2])
-        
-        { // save is off
-            fill(255);   
-            rect(c1.cX,c1.cY,c1.cW,c1.cH);
-            image(save,c1.cX+5,c1.cY+5,30,30); 
-        }
+        clearButtonHoverDraw();
+
+        saveButtonDraw();
         
         saveShowHideButtonDraw();
 
-        // hover draws for buttons
         
-        if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && c1.cSaved == true) 
-        
-        { // hover draw for clear button
-        
-            stroke(150,164,181);
-            line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
-            line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
-            
-            stroke(15);
-            line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
-            stroke(44,49,54);
-            line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
-           
-            line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
-            line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
-            stroke(150,164,181);
-            line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
-            line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
-            stroke(27,30,33);
-            line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
-            line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
-            
-            stroke(255);
-            fill(255);
-            rect(c2.cX+5,c2.cY+5,30,30); 
-            image(clear,c2.cX+5,c2.cY+5,30,30);
-            stroke(96);
+        // hovers
 
-        }
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && layerSelect == selectState[2]) 
         
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == false && layerSelect == selectState[2]) 
-        
-        { // draw save hover before first click to 'save layer'
+        { // save appears when selection is done
           
-            stroke(150,164,181);
-            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
-            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
-            
-            stroke(15);
-            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
-            stroke(44,49,54);
-            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
-           
-           
-            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
-            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
-            stroke(255);
-            fill(255);
-            rect(c1.cX+5,c1.cY+5,30,30); 
-            image(save,c1.cX+5,c1.cY+5,30,30); 
-            stroke(96);
+          hoverBeforeSaveDraw();
 
         }
 
         hoverSaveButtonDraw();
         
         // mousePress effects  
-        if (mousePressed == true && c1.cSaved == false && layerSelect == selectState[2])
+
+        if (mousePressed == true && layerSelect == selectState[2])
         
         { // save is currently off, but being switched on
             if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40) 
@@ -332,11 +267,11 @@ class ControlPanel // cPanel
             }        
         }
 
-        if (mousePressed == true && c1.cSaved == true)
+        if (mousePressed == true)
         
         { // save is currently on
         
-         mousePressedShowHideButtonDraw();
+        mousePressedShowHideButtonDraw();
         
         }
     }
@@ -425,7 +360,16 @@ void mouseClicked()
     if (mouseX < width/2+(offset/2) && mouseX > width/2-(offset/2) && mouseY < (offset/2)) { // CONSOLE LOG REPORTING
         println("Console log.");
         println("left/right offset: " + offset);
-
+        println("slot1 layerSet: " + s1.layerSet);
+        println("slot2 layerSet: " + s2.layerSet);
+        println("slot3 layerSet: " + s3.layerSet);
+        println("slot4 layerSet: " + s4.layerSet);
+        println("slot5 layerSet: " + s5.layerSet);
+        println("slot6 layerSet: " + s6.layerSet);
+        println("slot7 layerSet: " + s7.layerSet);
+        println("slot8 layerSet: " + s8.layerSet);
+        println("slot9 layerSet: " + s9.layerSet);
+        println("slot10 layerSet: " + s10.layerSet);
     }
 
     
@@ -472,7 +416,7 @@ void mouseClicked()
                 break;
         }
     }
-    if ((mouseY > 64 && mouseX < offset) || (mouseY > 64 && mouseX < offset) || (mouseX > 512+offset && mouseY > 64)) {
+    if ((mouseY > 64 && mouseX < offset) || (mouseY > 64 && mouseX < offset) || (mouseX > 512+offset && mouseY > 64)) { // DESELECT LAYER
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -565,14 +509,13 @@ void mainGrid()
 }
 
 
-// DRAWS AND CLICKS RELATED TO SLOT LAYERS
+// DRAWS SLOTS
 
-
-void slotLayerShowHideGridDraw()
+void slotLayerShowHideDraw()
 
 { // draw show & hide saved layers on grid
     
-    if (s1.slotOn == true && s1.layerSet == true && c1.saveVisible == true && s1.saveVisible == true) // draw saved layer
+    if (s1.slotOn == true && s1.layerSet == true && s1.layerVisible == true) // draw saved layer
         // s1.draw saved layer
         {
                
@@ -582,7 +525,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s1.slotOn == true && s1.layerSet == true && c1.saveVisible == false && s1.saveVisible == false) 
+    if (s1.slotOn == true && s1.layerSet == true && s1.layerVisible == false) 
         // s1.hide saved layer
         {
              
@@ -592,7 +535,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s2.slotOn == true && s2.layerSet == true && c1.saveVisible == true && s2.saveVisible == true) 
+    if (s2.slotOn == true && s2.layerSet == true && s2.layerVisible == true) 
         
         { // s2.draw saved layer
                
@@ -602,7 +545,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s2.slotOn == true && s2.layerSet == true && c1.saveVisible == false && s2.saveVisible == false) // hide saved layer
+    if (s2.slotOn == true && s2.layerSet == true && s2.layerVisible == false) // hide saved layer
         
         { // s2.hide saved layer
              
@@ -612,7 +555,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s3.slotOn == true && s3.layerSet == true && c1.saveVisible == true && s3.saveVisible == true) 
+    if (s3.slotOn == true && s3.layerSet == true && s3.layerVisible == true) 
         
         { // s3.draw saved layer
                
@@ -622,7 +565,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s3.slotOn == true && s3.layerSet == true && c1.saveVisible == false && s3.saveVisible == false) // hide saved layer
+    if (s3.slotOn == true && s3.layerSet == true && s3.layerVisible == false) // hide saved layer
         
         { // s3.hide saved layer
              
@@ -632,7 +575,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s4.slotOn == true && s4.layerSet == true && c1.saveVisible == true && s4.saveVisible == true) 
+    if (s4.slotOn == true && s4.layerSet == true && s4.layerVisible == true) 
         
         { // s4.draw saved layer
                
@@ -642,7 +585,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s4.slotOn == true && s4.layerSet == true && c1.saveVisible == false && s4.saveVisible == false) // hide saved layer
+    if (s4.slotOn == true && s4.layerSet == true && s4.layerVisible == false) // hide saved layer
         
         { // s4.hide saved layer
              
@@ -652,7 +595,7 @@ void slotLayerShowHideGridDraw()
             
         }
         
-    if (s5.slotOn == true && s5.layerSet == true && c1.saveVisible == true && s5.saveVisible == true) 
+    if (s5.slotOn == true && s5.layerSet == true && s5.layerVisible == true) 
         
         { // s5.draw saved layer
                
@@ -662,7 +605,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s5.slotOn == true && s5.layerSet == true && c1.saveVisible == false && s5.saveVisible == false) // hide saved layer
+    if (s5.slotOn == true && s5.layerSet == true && s5.layerVisible == false) // hide saved layer
         
         { // s5.hide saved layer
              
@@ -672,7 +615,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s6.slotOn == true && s6.layerSet == true && c1.saveVisible == true && s6.saveVisible == true) 
+    if (s6.slotOn == true && s6.layerSet == true && s6.layerVisible == true) 
         
         { // s6.draw saved layer
                
@@ -682,7 +625,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s6.slotOn == true && s6.layerSet == true && c1.saveVisible == false && s6.saveVisible == false) // hide saved layer
+    if (s6.slotOn == true && s6.layerSet == true && s6.layerVisible == false) // hide saved layer
         
         { // s6.hide saved layer
              
@@ -692,7 +635,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s7.slotOn == true && s7.layerSet == true && c1.saveVisible == true && s7.saveVisible == true) 
+    if (s7.slotOn == true && s7.layerSet == true && s7.layerVisible == true) 
         
         { // s7.raw saved layer
                
@@ -702,7 +645,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s7.slotOn == true && s7.layerSet == true && c1.saveVisible == false && s7.saveVisible == false) // hide saved layer
+    if (s7.slotOn == true && s7.layerSet == true && s7.layerVisible == false) // hide saved layer
         
         { // s7.hide saved layer
              
@@ -712,7 +655,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s8.slotOn == true && s8.layerSet == true && c1.saveVisible == true && s8.saveVisible == true) 
+    if (s8.slotOn == true && s8.layerSet == true && s8.layerVisible == true) 
         
         { // s8.draw saved layer
                
@@ -722,7 +665,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s8.slotOn == true && s8.layerSet == true && c1.saveVisible == false && s8.saveVisible == false) // hide saved layer
+    if (s8.slotOn == true && s8.layerSet == true && s8.layerVisible == false) // hide saved layer
         
         { // s8.hide saved layer
              
@@ -732,7 +675,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s9.slotOn == true && s9.layerSet == true && c1.saveVisible == true && s9.saveVisible == true) 
+    if (s9.slotOn == true && s9.layerSet == true && s9.layerVisible == true) 
         
         { // s9.draw saved layer
                
@@ -742,7 +685,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s9.slotOn == true && s9.layerSet == true && c1.saveVisible == false && s9.saveVisible == false) // hide saved layer
+    if (s9.slotOn == true && s9.layerSet == true && s9.layerVisible == false) // hide saved layer
         
         { // s9.hide saved layer
              
@@ -752,7 +695,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s10.slotOn == true && s10.layerSet == true && c1.saveVisible == true && s10.saveVisible == true) 
+    if (s10.slotOn == true && s10.layerSet == true && s10.layerVisible == true) 
         
         { // s10.draw saved layer
                
@@ -762,7 +705,7 @@ void slotLayerShowHideGridDraw()
             
         }
 
-    if (s10.slotOn == true && s10.layerSet == true && c1.saveVisible == false && s10.saveVisible == false) // hide saved layer
+    if (s10.slotOn == true && s10.layerSet == true && s10.layerVisible == false) // hide saved layer
         
         { // s10.hide saved layer
              
@@ -773,11 +716,101 @@ void slotLayerShowHideGridDraw()
         }
 }
 
+
+// DRAWS cPANEL
+
+void saveButtonDraw()
+
+{
+
+    if (s1.layerSet == false && layerSelect == selectState[2])
+    
+    { // save button shows
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s2.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s3.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s4.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s5.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s6.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s7.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s8.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s9.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    if (s10.layerSet == false && layerSelect == selectState[2])
+    
+    { // save is off
+        fill(255);   
+        rect(c1.cX,c1.cY,c1.cW,c1.cH);
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+    }
+
+    
+}
+
 void saveShowHideButtonDraw() 
 
 { // draw show & hide buttons in cPanel
 
-    if (s1.saveVisible == true && c1.cSaved == true && c1.saveVisible == true )  
+    if (s1.layerVisible == true && s1.layerSet == true && s1.slotOn == true)  
     
     { // s1.save is on and visible (will need to do these for all slots)
         translate(0,0);        
@@ -806,7 +839,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s1.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s1.layerVisible == false && s1.layerSet == true && s1.slotOn == true)
 
     { //  s1.save is on, but invisible (will need to do these for all slots)
 
@@ -832,11 +865,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
-    if (s2.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s2.layerVisible == true && s2.layerSet == true && s2.slotOn == true)  
     
     { // s2.save is on and visible
         translate(0,0);        
@@ -865,7 +898,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s2.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s2.layerVisible == false && s2.layerSet == true && s2.slotOn == true)
 
     { //  s2.save is on, but invisible
 
@@ -891,11 +924,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
-    if (s3.saveVisible == true && c1.cSaved == true && c1.saveVisible == true) 
+    if (s3.layerVisible == true && s3.layerSet == true && s3.slotOn == true) 
     
     { // s3.save is on and visible
         translate(0,0);        
@@ -923,7 +956,7 @@ void saveShowHideButtonDraw()
         image(saveShow,c1.cX+5,c1.cY+6,30,30);
     }
     
-    if (s3.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s3.layerVisible == false && s3.layerSet == true && s3.slotOn == true)  
     { //  s3.save is on, but invisible
 
         translate(0,0);        
@@ -948,11 +981,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
-    if (s4.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s4.layerVisible == true && s4.layerSet == true && s4.slotOn == true)  
     
     { // s4.save is on and visible
         translate(0,0);        
@@ -981,7 +1014,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s4.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s4.layerVisible == false && s4.layerSet == true && s4.slotOn == true)
 
     { //  s4.save is on, but invisible
 
@@ -1007,11 +1040,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
-    if (s5.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s5.layerVisible == true && s5.layerSet == true && s5.slotOn == true)  
     
     { // s5.save is on and visible
         translate(0,0);        
@@ -1040,7 +1073,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s5.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s5.layerVisible == false && s5.layerSet == true && s5.slotOn == true)
 
     { //  s5.save is on, but invisible
 
@@ -1066,11 +1099,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
-    if (s6.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s6.layerVisible == true && s6.layerSet == true && s6.slotOn == true)  
     
     { // s6.save is on and visible
         translate(0,0);        
@@ -1099,7 +1132,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s6.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s6.layerVisible == false && s6.layerSet == true && s6.slotOn == true)
 
     { //  s6.save is on, but invisible
 
@@ -1125,11 +1158,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
-    if (s7.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s7.layerVisible == true && s7.layerSet == true && s7.slotOn == true)  
     
     { // s7.save is on and visible
         translate(0,0);        
@@ -1158,7 +1191,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s7.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s7.layerVisible == false && s7.layerSet == true && s7.slotOn == true)
 
     { //  s7.save is on, but invisible
 
@@ -1184,11 +1217,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
-    if (s8.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s8.layerVisible == true && s8.layerSet == true && s8.slotOn == true)  
     
     { // s8.save is on and visible
         translate(0,0);        
@@ -1217,7 +1250,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s8.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s8.layerVisible == false && s8.layerSet == true && s8.slotOn == true)
 
     { //  s8.save is on, but invisible
 
@@ -1243,11 +1276,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
-    if (s9.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s9.layerVisible == true && s9.layerSet == true && s9.slotOn == true)  
     
     { // s9.save is on and visible
         translate(0,0);        
@@ -1276,7 +1309,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s9.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s9.layerVisible == false && s9.layerSet == true && s9.slotOn == true)
 
     { //  s9.save is on, but invisible
 
@@ -1302,11 +1335,11 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }    
     
-    if (s10.saveVisible == true && c1.cSaved == true && c1.saveVisible == true)  
+    if (s10.layerVisible == true && s10.layerSet == true && s10.slotOn == true)  
     
     { // s10.save is on and visible
         translate(0,0);        
@@ -1335,7 +1368,7 @@ void saveShowHideButtonDraw()
 
     }
     
-    if (s10.saveVisible == false && c1.cSaved == true && c1.saveVisible == false)
+    if (s10.layerVisible == false && s10.layerSet == true && s10.slotOn == true)
 
     { //  s10.save is on, but invisible
 
@@ -1361,7 +1394,7 @@ void saveShowHideButtonDraw()
         line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
 
         stroke(96);
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30);
+        image(saveHide,c1.cX+5,c1.cY+6,30,30);
 
     }
 
@@ -1372,9 +1405,9 @@ void hoverSaveButtonDraw()
 
 { // draw hover on save button in cPanel (s1-s10)
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s1.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.layerSet == true && s1.layerVisible == true && s1.slotOn == true) 
         
-        { // s1.draw hover after layer is saved - layer is visible 
+        { // s1.draw save button hover when layer is visible 
            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1389,14 +1422,14 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s2.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.layerSet == true && s2.layerVisible == true && s2.slotOn == true) 
         
-        { // s2.draw hover after layer is saved - layer is visible 
+        { // s2.draw save button hover when layer is visible 
           
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1411,14 +1444,36 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s3.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.layerSet == true && s3.layerVisible == true && s3.slotOn == true) 
         
-        { // s3.draw hover after layer is saved - layer is visible 
+        { // s3.draw save button hover when layer is visible            
+            
+            stroke(150,164,181);
+            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+            
+            stroke(15);
+            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            stroke(44,49,54);
+            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+           
+            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+            stroke(#646464);
+            fill(#646464);
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
+            stroke(96);
+           
+        }
+
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.layerSet == true && s4.layerVisible == true && s4.slotOn == true) 
+        
+        { // s4.draw save button hover when layer is visible 
            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1433,14 +1488,14 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s4.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.layerSet == true && s5.layerVisible == true  && s5.slotOn == true) 
         
-        { // s4.draw hover after layer is saved - layer is visible (will need to do separately for each slot)
+        { // s5.draw save button hover when layer is visible 
            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1455,36 +1510,14 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s5.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.layerSet == true && s6.layerVisible == true && s6.slotOn == true) 
         
-        { // s5.draw hover after layer is saved - layer is visible 
-           
-            stroke(150,164,181);
-            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
-            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
-            
-            stroke(15);
-            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
-            stroke(44,49,54);
-            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
-           
-            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
-            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
-            stroke(#646464);
-            fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
-            stroke(96);
-           
-        }
-
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s6.saveVisible == true) 
-        
-        { // s6.draw hover after layer is saved - layer is visible 
+        { // s6.draw save button hover when layer is visible 
           
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1499,14 +1532,14 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s7.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.layerSet == true && s7.layerVisible == true  && s7.slotOn == true) 
         
-        { // s7.draw hover after layer is saved - layer is visible 
+        { // s7.draw save button hover when layer is visible 
           
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1521,14 +1554,14 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s8.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.layerSet == true && s8.layerVisible == true  && s8.slotOn == true) 
         
-        { // s8.draw hover after layer is saved - layer is visible
+        { // s8.draw save button hover when layer is visible 
           
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1543,14 +1576,14 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s9.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.layerSet == true && s9.layerVisible == true && s9.slotOn == true) 
         
-        { // s9.draw hover after layer is saved - layer is visible 
+        { // s9.draw save button hover when layer is visible 
            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1565,14 +1598,14 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == true && s10.saveVisible == true) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.layerSet == true && s10.layerVisible == true  && s10.slotOn == true) 
         
-        { // s10.draw hover after layer is saved - layer is visible 
+        { // s10.draw save button hover when layer is visible 
           
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1587,14 +1620,14 @@ void hoverSaveButtonDraw()
             line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
             stroke(#646464);
             fill(#646464);
-            image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+            image(saveHide,c1.cX+5,c1.cY+6,30,30); 
             stroke(96);
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s1.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.layerSet == true && s1.layerVisible == false && s1.slotOn == true) 
         
-        { // s1.draw hover after layer is saved - layer is invisible 
+        { // s1.draw save button hover wnen layer is invisible 
            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1616,9 +1649,9 @@ void hoverSaveButtonDraw()
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s2.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.layerSet == true && s2.layerVisible == false && s2.slotOn == true) 
         
-        { // s2.draw hover after layer is saved - layer is invisible 
+        { // s2.draw save button hover wnen layer is invisible 
            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1640,9 +1673,9 @@ void hoverSaveButtonDraw()
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s3.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.layerSet == true && s3.layerVisible == false  && s3.slotOn == true) 
         
-        { // s3.draw hover after layer is saved - layer is invisible 
+        { // s3.draw save button hover wnen layer is invisible 
           
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1663,9 +1696,9 @@ void hoverSaveButtonDraw()
             stroke(96);
            
         }
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s4.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.layerSet == true && s4.layerVisible == false && s4.slotOn == true) 
         
-        { // s4.draw hover after layer is saved - layer is invisible 
+        { // s4.draw save button hover wnen layer is invisible 
           
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1687,9 +1720,33 @@ void hoverSaveButtonDraw()
            
         }        
         
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s5.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.layerSet == true && s5.layerVisible == false && s5.slotOn == true) 
         
-        { // s5.draw hover after layer is saved - layer is invisible 
+        { // s5.draw save button hover wnen layer is invisible 
+            
+            stroke(150,164,181);
+            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+            
+            stroke(15);
+            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+            stroke(44,49,54);
+            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+           
+            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+            stroke(#646464);
+            fill(#646464);
+            rect(c1.cX+5,c1.cY+6,30,30); 
+            
+            image(saveShow,c1.cX+5,c1.cY+6,30,30); 
+            stroke(96);
+           
+        }
+
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.layerSet == true && s6.layerVisible == false  && s6.slotOn == true) 
+        
+        { // s6.draw save button hover wnen layer is invisible 
           
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1711,33 +1768,9 @@ void hoverSaveButtonDraw()
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s6.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.layerSet == true && s7.layerVisible == false && s7.slotOn == true) 
         
-        { // s6.draw hover after layer is saved - layer is invisible
-          
-            stroke(150,164,181);
-            line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
-            line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
-            
-            stroke(15);
-            line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
-            stroke(44,49,54);
-            line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
-           
-            line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
-            line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
-            stroke(#646464);
-            fill(#646464);
-            rect(c1.cX+5,c1.cY+6,30,30); 
-            
-            image(saveShow,c1.cX+5,c1.cY+6,30,30); 
-            stroke(96);
-           
-        }
-
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s7.saveVisible == false) 
-        
-        { // s7.draw hover after layer is saved - layer is invisible 
+        { // s7.draw save button hover wnen layer is invisible 
            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1759,9 +1792,9 @@ void hoverSaveButtonDraw()
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s8.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.layerSet == true && s8.layerVisible == false && s8.slotOn == true) 
         
-        { // s8.draw hover after layer is saved - layer is invisible 
+        { // s8.draw save button hover wnen layer is invisible 
             
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1783,9 +1816,9 @@ void hoverSaveButtonDraw()
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s9.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.layerSet == true && s9.layerVisible == false && s9.slotOn == true) 
         
-        { // s9.draw hover after layer is saved - layer is invisible 
+        { // s9.draw save button hover wnen layer is invisible 
             
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1807,9 +1840,9 @@ void hoverSaveButtonDraw()
            
         }
 
-        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && c1.cSaved == true && c1.saveVisible == false && s10.saveVisible == false) 
+        if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.layerSet == true && s10.layerVisible == false && s10.slotOn == true) 
         
-        { // s10.draw hover after layer is saved - layer is invisible 
+        { // s10.draw save button hover wnen layer is invisible 
            
             stroke(150,164,181);
             line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
@@ -1833,11 +1866,257 @@ void hoverSaveButtonDraw()
 
 }
 
+void hoverBeforeSaveDraw()
+
+{
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }
+
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.layerSet == false && layerSelect == selectState[2]) 
+    
+    { // draw hover before save
+        
+        stroke(150,164,181);
+        line(c1.cX+1,c1.cY+39,c1.cX+39,c1.cY+39);
+        line(c1.cX+39,c1.cY+1,c1.cX+39,c1.cY+39);
+        
+        stroke(15);
+        line(c1.cX+1,c1.cY+1,c1.cX+1,c1.cY+39);
+        stroke(44,49,54);
+        line(c1.cX+2,c1.cY+2,c1.cX+2,c1.cY+38);
+        
+        
+        line(c1.cX+1,c1.cY+1,c1.cX+39,c1.cY+1);
+        line(c1.cX+2,c1.cY+2,c1.cX+38,c1.cY+2);
+        stroke(255);
+        fill(255);
+        rect(c1.cX+5,c1.cY+5,30,30); 
+        image(save,c1.cX+5,c1.cY+5,30,30); 
+        stroke(96);
+
+    }    
+
+}
+
 void mousePressedShowHideButtonDraw()
 
 {  // draw mousepressed for show & hide buttons in cPanel
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.layerVisible == false) 
 
     { // s1.mousepress is switching to layer invisible (save) 
         
@@ -1861,7 +2140,7 @@ void mousePressedShowHideButtonDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.layerVisible == false) 
 
     { // s2.mousepress is switching to layer invisible (save) 
         
@@ -1885,7 +2164,7 @@ void mousePressedShowHideButtonDraw()
         
     }    
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.layerVisible == false) 
 
     { // s3.mousepress is switching to layer invisible (save) 
         
@@ -1909,7 +2188,7 @@ void mousePressedShowHideButtonDraw()
         
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.layerVisible == false) 
 
     { // s4.mousepress is switching to layer invisible (save) 
         
@@ -1933,7 +2212,7 @@ void mousePressedShowHideButtonDraw()
         
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.layerVisible == false) 
 
     { // s5.mousepress is switching to layer invisible (save) 
         
@@ -1957,7 +2236,7 @@ void mousePressedShowHideButtonDraw()
         
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.layerVisible == false) 
 
     { // s6.mousepress is switching to layer invisible (save) 
         
@@ -1981,7 +2260,7 @@ void mousePressedShowHideButtonDraw()
         
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.layerVisible == false) 
 
     { // s7.mousepress is switching to layer invisible (save) 
         
@@ -2005,7 +2284,7 @@ void mousePressedShowHideButtonDraw()
         
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.layerVisible == false) 
 
     { // s8.mousepress is switching to layer invisible (save) 
         
@@ -2029,7 +2308,7 @@ void mousePressedShowHideButtonDraw()
         
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.layerVisible == false) 
 
     { // s9.mousepress is switching to layer invisible (save) 
         
@@ -2053,7 +2332,7 @@ void mousePressedShowHideButtonDraw()
         
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.saveVisible == false) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.layerVisible == false) 
 
     { // s10.mousepress is switching to layer invisible (save) 
         
@@ -2078,7 +2357,7 @@ void mousePressedShowHideButtonDraw()
     }
    
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.layerVisible == true) 
 
     { // s1.mousepress is switching to layer visible (save) 
         
@@ -2097,12 +2376,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.layerVisible == true) 
 
     { // s2.mousepress is switching to layer visible (save) 
         
@@ -2121,12 +2400,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.layerVisible == true) 
 
     { // s3.mousepress is switching to layer visible (save) 
         
@@ -2145,12 +2424,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.layerVisible == true) 
 
     { // s4.mousepress is switching to layer visible (save) 
         
@@ -2169,12 +2448,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.layerVisible == true) 
 
     { // s5.mousepress is switching to layer visible (save) 
         
@@ -2193,12 +2472,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.layerVisible == true) 
 
     { // s6.mousepress is switching to layer visible (save) 
         
@@ -2217,12 +2496,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.layerVisible == true) 
 
     { // s7.mousepress is switching to layer visible (save) 
         
@@ -2241,12 +2520,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.layerVisible == true) 
 
     { // s8.mousepress is switching to layer visible (save) 
         
@@ -2265,12 +2544,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.layerVisible == true) 
 
     { // s9.mousepress is switching to layer visible (save) 
         
@@ -2289,12 +2568,12 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.saveVisible == true) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.layerVisible == true) 
 
     { // s10.mousepress is switching to layer visible (save) 
         
@@ -2313,7 +2592,7 @@ void mousePressedShowHideButtonDraw()
         fill(#646464);
         rect(c1.cX+5,c1.cY+6,30,30); 
         
-        image(saveHidden,c1.cX+5,c1.cY+6,30,30); 
+        image(saveHide,c1.cX+5,c1.cY+6,30,30); 
         stroke(96);
     
     }
@@ -2352,6 +2631,402 @@ void mousePressedShowHideButtonDraw()
 
 }
 
+void clearButtonDraw()
+
+{
+
+    if (c2.cSaved == false && s1.layerSet == true && s1.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s2.layerSet == true && s2.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s3.layerSet == true && s3.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s4.layerSet == true && s4.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s5.layerSet == true && s5.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s6.layerSet == true && s6.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s7.layerSet == true && s7.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s8.layerSet == true && s8.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s9.layerSet == true && s9.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+    if (c2.cSaved == false && s10.layerSet == true && s10.slotOn == true) 
+    
+    { // draw clear icon for visible save
+        fill(255); 
+        rect(c2.cX,c2.cY,c2.cW,c2.cH);
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+    }
+
+
+
+}
+
+void clearButtonHoverDraw()
+{
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s1.layerSet == true && s1.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s2.layerSet == true && s2.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s3.layerSet == true && s3.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s4.layerSet == true && s4.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s5.layerSet == true && s5.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s6.layerSet == true && s6.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s7.layerSet == true && s7.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s8.layerSet == true && s8.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s9.layerSet == true && s9.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+    if (mouseX > c2.cX && mouseX < c2.cX+40 && mouseY > c2.cY && mouseY < c2.cY+40 && s10.layerSet == true && s10.slotOn == true) 
+    
+    { // hover draw for clear button
+    
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        
+        stroke(15);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        stroke(44,49,54);
+        line(c2.cX+2,c2.cY+2,c2.cX+2,c2.cY+38);
+        
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        line(c2.cX+2,c2.cY+2,c2.cX+38,c2.cY+2);
+        stroke(150,164,181);
+        line(c2.cX+1,c2.cY+39,c2.cX+39,c2.cY+39);
+        line(c2.cX+39,c2.cY+1,c2.cX+39,c2.cY+39);
+        stroke(27,30,33);
+        line(c2.cX+1,c2.cY+1,c2.cX+1,c2.cY+39);
+        line(c2.cX+1,c2.cY+1,c2.cX+39,c2.cY+1);
+        
+        stroke(255);
+        fill(255);
+        rect(c2.cX+5,c2.cY+5,30,30); 
+        image(clear,c2.cX+5,c2.cY+5,30,30);
+        stroke(96);
+
+    }
+
+}
+
+
+// CLICKS
+
 void slotSelectClicks() 
 
 { // click slot button to make active
@@ -2372,15 +3047,6 @@ void slotSelectClicks()
                 c1.cX = offset+55;
                 c2.cX = offset+55;                
         }
-
-        if (s1.layerSet == true) {
-            c1.cSaved = true;
-        }
-        else if (s1.layerSet == false) {
-            c1.cSaved = false;
-        }
-
-
     }
     if (mouseX > s2.sX && mouseX < s2.sX+40 && mouseY > s2.sY && mouseY < s2.sY+40){ // slots
         
@@ -2401,12 +3067,6 @@ void slotSelectClicks()
                 c2.cX = 40+c2.cX;
 
         }
-        if (s2.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s2.layerSet == false) {
-            c1.cSaved = false;
-        }
     }    
     if (mouseX > s3.sX && mouseX < s3.sX+40 && mouseY > s3.sY && mouseY < s3.sY+40){ // slots
         
@@ -2425,12 +3085,6 @@ void slotSelectClicks()
                 c2.cX = offset+55;
                 c1.cX = 80+c1.cX;
                 c2.cX = 80+c2.cX;
-        }
-        if (s3.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s3.layerSet == false) {
-            c1.cSaved = false;
         }
     }    
     if (mouseX > s4.sX && mouseX < s4.sX+40 && mouseY > s4.sY && mouseY < s4.sY+40){ // slots
@@ -2452,13 +3106,6 @@ void slotSelectClicks()
                 c2.cX = 120+c2.cX;
 
         }
-        if (s4.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s4.layerSet == false) {
-            c1.cSaved = false;
-        }
-
     }
     if (mouseX > s5.sX && mouseX < s5.sX+40 && mouseY > s5.sY && mouseY < s5.sY+40){ // slots
         
@@ -2479,13 +3126,6 @@ void slotSelectClicks()
                 c2.cX = 160+c2.cX;
 
         }
-        if (s5.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s5.layerSet == false) {
-            c1.cSaved = false;
-        }
-
 
     }
     if (mouseX > s6.sX && mouseX < s6.sX+40 && mouseY > s6.sY && mouseY < s6.sY+40){ // slots
@@ -2507,13 +3147,6 @@ void slotSelectClicks()
                 c2.cX = 200+c2.cX;
 
         }
-        if (s6.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s6.layerSet == false) {
-            c1.cSaved = false;
-        }
-
 
     }
     if (mouseX > s7.sX && mouseX < s7.sX+40 && mouseY > s7.sY && mouseY < s7.sY+40){ // slots
@@ -2536,19 +3169,10 @@ void slotSelectClicks()
                 c2.cX = 240+c2.cX;
 
         }
-        if (s7.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s7.layerSet == false) {
-            c1.cSaved = false;
-        }
-
-
 
     }
     if (mouseX > s8.sX && mouseX < s8.sX+40 && mouseY > s8.sY && mouseY < s8.sY+40){ // slots
         
-
         if (s8.slotOn == false) {
                 s1.slotOn = false;
                 s2.slotOn = false;
@@ -2566,14 +3190,6 @@ void slotSelectClicks()
                 c2.cX = 280+c2.cX;
 
         }
-        if (s8.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s8.layerSet == false) {
-            c1.cSaved = false;
-        }    
-
-
     }
     if (mouseX > s9.sX && mouseX < s9.sX+40 && mouseY > s9.sY && mouseY < s9.sY+40){ // slots
         
@@ -2594,17 +3210,7 @@ void slotSelectClicks()
                 c2.cX = 320+c2.cX;
 
         }
-
-        if (s9.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s9.layerSet == false) {
-            c1.cSaved = false;
-        } 
-
-        
     }
-    
     if (mouseX > s10.sX && mouseX < s10.sX+40 && mouseY > s10.sY && mouseY < s10.sY+40){ // slots
         
         if (s10.slotOn == false) {
@@ -2624,14 +3230,6 @@ void slotSelectClicks()
                 c2.cX = 360+c2.cX;
 
         }
-
-        if (s10.layerSet == true) {
-            c1.cSaved = true; 
-        }
-        else if (s10.layerSet == false) {
-            c1.cSaved = false;
-        } 
-
     }     
 }
 
@@ -2639,24 +3237,24 @@ void saveButtonClicks()
 
 {  // click save button in cPanel 
         
-    if (s1.saveVisible == false && c1.cSaved == true && s1.layerSet == true && c1.saveVisible == false) 
+    if (s1.layerVisible == false && s1.slotOn == true && s1.layerSet == true) 
         
     { // s1.switch save visibility to on, from off
              
-        c1.saveVisible = true; // this is for the button draw
-        s1.saveVisible = true; // this is for the layer draw
+        
+        s1.layerVisible = true; // this is for the layer draw
 
     }
         
-    else if (s1.saveVisible == true && c1.cSaved == true && s1.layerSet == true && c1.saveVisible == true) 
+    else if (s1.layerVisible == true && s1.slotOn == true && s1.layerSet == true) 
     
     { // s1.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s1.saveVisible = false; // controls the layer draw in the grid
+        
+        s1.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (s1.slotOn == true && layerSelect == selectState[2] && c1.cSaved == false && readyToSave == true) 
+    if (s1.layerSet == false && s1.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s1.on click, get values for layer save
 
@@ -2684,10 +3282,8 @@ void saveButtonClicks()
             
         s1.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
-        s1.layerSet = true; // now display save layer if saveVisible is visible cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s1.saveVisible = true;
+        s1.layerSet = true; // now display layer if layerVisible is true
+        s1.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -2697,24 +3293,22 @@ void saveButtonClicks()
             
     }
 
-    if (s2.saveVisible == false && c1.cSaved == true && s2.layerSet == true && c1.saveVisible == false) 
+    if (s2.layerVisible == false && s2.slotOn == true && s2.layerSet == true) 
         
     { // s2.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s2.saveVisible = true;
+        s2.layerVisible = true;
 
     }
         
-    else if (s2.saveVisible == true && c1.cSaved == true && s2.layerSet == true && c1.saveVisible == true) 
+    else if (s2.layerVisible == true && s2.slotOn == true && s2.layerSet == true) 
     
     { // s2.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s2.saveVisible = false; // controls the layer draw in the grid
+        s2.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s2.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (s2.layerSet == false && s2.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
     
     {  // s2.on click, get values for layer save
 
@@ -2743,9 +3337,7 @@ void saveButtonClicks()
         s2.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s2.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s2.saveVisible = true;
+        s2.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -2755,24 +3347,22 @@ void saveButtonClicks()
             
     }
 
-    if (s3.saveVisible == false && c1.cSaved == true && s3.layerSet == true && c1.saveVisible == false) 
+    if (s3.layerVisible == false && s3.slotOn == true && s3.layerSet == true) 
         
     { // s3.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s3.saveVisible = true;
+        s3.layerVisible = true;
 
     }
         
-    else if (s3.saveVisible == true && c1.cSaved == true && s3.layerSet == true && c1.saveVisible == true) 
+    else if (s3.layerVisible == true && s3.slotOn == true && s3.layerSet == true) 
     
     { // s3.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s3.saveVisible = false; // controls the layer draw in the grid
+        s3.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s3.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (s3.layerSet == false && s3.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
     
     {  // s3.on click, get values for layer save
 
@@ -2801,9 +3391,7 @@ void saveButtonClicks()
         s3.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s3.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s3.saveVisible = true;
+        s3.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -2813,24 +3401,22 @@ void saveButtonClicks()
             
     }
 
-    if (s4.saveVisible == false && c1.cSaved == true && s4.layerSet == true && c1.saveVisible == false) 
+    if (s4.layerVisible == false && s4.slotOn == true && s4.layerSet == true) 
         
     { // s4.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s4.saveVisible = true;
+        s4.layerVisible = true;
 
     }
         
-    else if (s4.saveVisible == true && c1.cSaved == true && s4.layerSet == true && c1.saveVisible == true) 
+    else if (s4.layerVisible == true && s4.slotOn == true && s4.layerSet == true) 
     
     { // s4.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s4.saveVisible = false; // controls the layer draw in the grid
+        s4.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s4.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
+    if (s4.layerSet == false && s4.slotOn == true && layerSelect == selectState[2] &&  readyToSave == true) 
     
     {  // s4.on click, get values for layer save
 
@@ -2859,9 +3445,7 @@ void saveButtonClicks()
         s4.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s4.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s4.saveVisible = true;
+        s4.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -2871,24 +3455,22 @@ void saveButtonClicks()
             
     }
 
-    if (s5.saveVisible == false && c1.cSaved == true && s5.layerSet == true && c1.saveVisible == false) 
+    if (s5.layerVisible == false && s5.slotOn == true && s5.layerSet == true) 
         
     { // s5.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s5.saveVisible = true;
+        s5.layerVisible = true;
 
     }
         
-    else if (s5.saveVisible == true && c1.cSaved == true && s5.layerSet == true && c1.saveVisible == true) 
+    else if (s5.layerVisible == true && s5.slotOn == true && s5.layerSet == true) 
     
     { // s5.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s5.saveVisible = false; // controls the layer draw in the grid
+        s5.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s5.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
+    if (s5.layerSet == false && s5.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s5.on click, get values for layer save
 
@@ -2917,9 +3499,7 @@ void saveButtonClicks()
         s5.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s5.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s5.saveVisible = true;
+        s5.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -2929,24 +3509,22 @@ void saveButtonClicks()
             
     }
     
-    if (s6.saveVisible == false && c1.cSaved == true && s6.layerSet == true && c1.saveVisible == false) 
+    if (s6.layerVisible == false && s6.slotOn == true && s6.layerSet == true) 
         
     { // s6.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s6.saveVisible = true;
+        s6.layerVisible = true;
 
     }
         
-    else if (s6.saveVisible == true && c1.cSaved == true && s6.layerSet == true && c1.saveVisible == true) 
+    else if (s6.layerVisible == true && s6.slotOn == true && s6.layerSet == true) 
     
     { // s6.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s6.saveVisible = false; // controls the layer draw in the grid
+        s6.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s6.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
+    if (s6.layerSet == false && s6.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s6.on click, get values for layer save
 
@@ -2975,9 +3553,7 @@ void saveButtonClicks()
         s6.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s6.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s6.saveVisible = true;
+        s6.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -2987,24 +3563,22 @@ void saveButtonClicks()
             
     }
     
-    if (s7.saveVisible == false && c1.cSaved == true && s7.layerSet == true && c1.saveVisible == false) 
+    if (s7.layerVisible == false && s7.slotOn == true && s7.layerSet == true) 
         
     { // s7.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s7.saveVisible = true;
+        s7.layerVisible = true;
 
     }
         
-    else if (s7.saveVisible == true && c1.cSaved == true && s7.layerSet == true && c1.saveVisible == true) 
+    else if (s7.layerVisible == true && s7.slotOn == true && s7.layerSet == true) 
     
     { // s7.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s7.saveVisible = false; // controls the layer draw in the grid
+        s7.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s7.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
+    if (s7.layerSet == false && s7.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s7.on click, get values for layer save
 
@@ -3033,9 +3607,7 @@ void saveButtonClicks()
         s7.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s7.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s7.saveVisible = true;
+        s7.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -3045,24 +3617,22 @@ void saveButtonClicks()
             
     }
 
-    if (s8.saveVisible == false && c1.cSaved == true && s8.layerSet == true && c1.saveVisible == false) 
+    if (s8.layerVisible == false && s8.slotOn == true && s8.layerSet == true) 
         
     { // s8.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s8.saveVisible = true;
+        s8.layerVisible = true;
 
     }
         
-    else if (s8.saveVisible == true && c1.cSaved == true && s8.layerSet == true && c1.saveVisible == true) 
+    else if (s8.layerVisible == true && s8.slotOn == true && s8.layerSet == true) 
     
     { // s8.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s8.saveVisible = false; // controls the layer draw in the grid
+        s8.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s8.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
+    if (s8.layerSet == false && s8.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s8.on click, get values for layer save
 
@@ -3091,9 +3661,7 @@ void saveButtonClicks()
         s8.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s8.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s8.saveVisible = true;
+        s8.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -3103,24 +3671,22 @@ void saveButtonClicks()
             
     }
 
-    if (c1.cSaved == true && s9.layerSet == true && c1.saveVisible == false && s9.saveVisible == false) 
+    if (s9.layerVisible == false && s9.slotOn == true && s9.layerSet == true) 
         
     { // s9.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s9.saveVisible = true;
+        s9.layerVisible = true;
 
     }
         
-    else if (c1.cSaved == true && s9.layerSet == true && c1.saveVisible == true && s9.saveVisible == true) 
+    else if (s9.layerSet == true && s9.slotOn == true && s9.layerVisible == true) 
     
     { // s9.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s9.saveVisible = false; // controls the layer draw in the grid
+        s9.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s9.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
+    if (s9.layerSet == false && s9.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s9.on click, get values for layer save
 
@@ -3149,9 +3715,7 @@ void saveButtonClicks()
         s9.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s9.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s9.saveVisible = true;
+        s9.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -3161,24 +3725,22 @@ void saveButtonClicks()
             
     }
 
-    if (c1.cSaved == true && s10.layerSet == true && c1.saveVisible == false && s10.saveVisible == false) 
+    if (s10.layerVisible == false && s10.slotOn == true && s10.layerSet == true) 
         
     { // s10.switch save visibility to on, from off
              
-        c1.saveVisible = true;
-        s10.saveVisible = true;
+        s10.layerVisible = true;
 
     }
         
-    else if (c1.cSaved == true && s10.layerSet == true && c1.saveVisible == true && s10.saveVisible == true) 
+    else if (s10.layerSet == true && s10.slotOn == true && s10.layerVisible == true) 
     
     { // s10.switch save visibility to off, from on
             
-        c1.saveVisible = false; // controls the cP button draw
-        s10.saveVisible = false; // controls the layer draw in the grid
+        s10.layerVisible = false; // controls the layer draw in the grid
     }
 
-    if (c1.cSaved == false && s10.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
+    if (s10.layerSet == false && s10.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
     {  // s10.on click, get values for layer save
 
@@ -3207,9 +3769,7 @@ void saveButtonClicks()
         s10.layH = ((ceil((endSelectY - offset) / gridSize) * gridSize)) - ((floor((startSelectY - offset) / gridSize) * gridSize));
         
         s10.layerSet = true; // now display save layer: cPanel display()
-        c1.cSaved = true;
-        c1.saveVisible = true;
-        s10.saveVisible = true;
+        s10.layerVisible = true;
         layerSelect = selectState[0];
         startSelectX = 0;
         endSelectX = 0;
@@ -3223,122 +3783,99 @@ void saveButtonClicks()
 void clearButtonClicks()
 
 {  // click clear button in cPanel clear 
-    if (c1.cSaved == true) { // clear all motherfucking values for the slot
-           
-        if (s1.slotOn == true){ // check which slot is active, change that slots values
-            s1.layX = 0;
-            s1.layY = 0;
-            s1.layW = 0;
-            s1.layH = 0;
-            s1.layerSet = false; // s1 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s1.saveVisible = false;// no layer to draw
-        }
+    if (s1.layerSet == true && s1.slotOn == true){ // check which slot is active, change that slots values
+        s1.layX = 0;
+        s1.layY = 0;
+        s1.layW = 0;
+        s1.layH = 0;
+        s1.layerSet = false; // s1 layer is no longer set
+        s1.layerVisible = false;// no layer to draw
+    }
 
-        if (s2.slotOn == true){ // check which slot is active, change that slots values
-            s2.layX = 0;
-            s2.layY = 0;
-            s2.layW = 0;
-            s2.layH = 0;
-            s2.layerSet = false; // s2 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s2.saveVisible = false;// no layer to draw
-        } 
+    if (s2.layerSet == true && s2.slotOn == true){ // check which slot is active, change that slots values
+        s2.layX = 0;
+        s2.layY = 0;
+        s2.layW = 0;
+        s2.layH = 0;
+        s2.layerSet = false; // s2 layer is no longer set
+        s2.layerVisible = false;// no layer to draw
+    } 
 
-        if (s3.slotOn == true){ // check which slot is active, change that slots values
-            s3.layX = 0;
-            s3.layY = 0;
-            s3.layW = 0;
-            s3.layH = 0;
-            s3.layerSet = false; // s3 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s3.saveVisible = false;// no layer to draw
-        }            
+    if (s3.layerSet == true && s3.slotOn == true){ // check which slot is active, change that slots values
+        s3.layX = 0;
+        s3.layY = 0;
+        s3.layW = 0;
+        s3.layH = 0;
+        s3.layerSet = false; // s3 layer is no longer set
+        s3.layerVisible = false;// no layer to draw
+    }            
 
-        if (s4.slotOn == true){ // check which slot is active, change that slots values
-            s4.layX = 0;
-            s4.layY = 0;
-            s4.layW = 0;
-            s4.layH = 0;
-            s4.layerSet = false; // s4 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s4.saveVisible = false;// no layer to draw
-        } 
+    if (s4.layerSet == true && s4.slotOn == true){ // check which slot is active, change that slots values
+        s4.layX = 0;
+        s4.layY = 0;
+        s4.layW = 0;
+        s4.layH = 0;
+        s4.layerSet = false; // s4 layer is no longer set
+        s4.layerVisible = false;// no layer to draw
+    } 
 
-        if (s5.slotOn == true){ // check which slot is active, change that slots values
-            s5.layX = 0;
-            s5.layY = 0;
-            s5.layW = 0;
-            s5.layH = 0;
-            s5.layerSet = false; // s5 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s5.saveVisible = false;// no layer to draw
-        } 
+    if (s5.layerSet == true && s5.slotOn == true){ // check which slot is active, change that slots values
+        s5.layX = 0;
+        s5.layY = 0;
+        s5.layW = 0;
+        s5.layH = 0;
+        s5.layerSet = false; // s5 layer is no longer set
+        s5.layerVisible = false;// no layer to draw
+    } 
 
-        if (s6.slotOn == true){ // check which slot is active, change that slots values
-            s6.layX = 0;
-            s6.layY = 0;
-            s6.layW = 0;
-            s6.layH = 0;
-            s6.layerSet = false; // s6 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s6.saveVisible = false;// no layer to draw
-        } 
+    if (s6.layerSet == true && s6.slotOn == true){ // check which slot is active, change that slots values
+        s6.layX = 0;
+        s6.layY = 0;
+        s6.layW = 0;
+        s6.layH = 0;
+        s6.layerSet = false; // s6 layer is no longer set
+        s6.layerVisible = false;// no layer to draw
+    } 
 
-        if (s7.slotOn == true){ // check which slot is active, change that slots values
-            s7.layX = 0;
-            s7.layY = 0;
-            s7.layW = 0;
-            s7.layH = 0;
-            s7.layerSet = false; // s7 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s7.saveVisible = false;// no layer to draw
-        } 
+    if (s7.layerSet == true && s7.slotOn == true){ // check which slot is active, change that slots values
+        s7.layX = 0;
+        s7.layY = 0;
+        s7.layW = 0;
+        s7.layH = 0;
+        s7.layerSet = false; // s7 layer is no longer set
+        s7.layerVisible = false;// no layer to draw
+    } 
 
-        if (s8.slotOn == true){ // check which slot is active, change that slots values
-            s8.layX = 0;
-            s8.layY = 0;
-            s8.layW = 0;
-            s8.layH = 0;
-            s8.layerSet = false; // s8 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s8.saveVisible = false;// no layer to draw
-        } 
+    if (s8.layerSet == true && s8.slotOn == true){ // check which slot is active, change that slots values
+        s8.layX = 0;
+        s8.layY = 0;
+        s8.layW = 0;
+        s8.layH = 0;
+        s8.layerSet = false; // s8 layer is no longer set
+        s8.layerVisible = false;// no layer to draw
+    } 
 
-        if (s9.slotOn == true){ // check which slot is active, change that slots values
-            s9.layX = 0;
-            s9.layY = 0;
-            s9.layW = 0;
-            s9.layH = 0;
-            s9.layerSet = false; // s9 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s9.saveVisible = false;// no layer to draw
-        } 
+    if (s9.layerSet == true && s9.slotOn == true){ // check which slot is active, change that slots values
+        s9.layX = 0;
+        s9.layY = 0;
+        s9.layW = 0;
+        s9.layH = 0;
+        s9.layerSet = false; // s9 layer is no longer set
+        s9.layerVisible = false;// no layer to draw
+    } 
 
-        if (s10.slotOn == true){ // check which slot is active, change that slots values
-            s10.layX = 0;
-            s10.layY = 0;
-            s10.layW = 0;
-            s10.layH = 0;
-            s10.layerSet = false; // s10 layer is no longer set
-            c1.cSaved = false; // save icon is not drawn
-            c1.saveVisible = true;  // starts as true
-            s10.saveVisible = false;// no layer to draw
-        } 
+    if (s10.layerSet == true && s10.slotOn == true){ // check which slot is active, change that slots values
+        s10.layX = 0;
+        s10.layY = 0;
+        s10.layW = 0;
+        s10.layH = 0;
+        s10.layerSet = false; // s10 layer is no longer set
+        s10.layerVisible = false;// no layer to draw
+    } 
 
-        }
-        else {
-            c2.cSaved = false; // if save isn't active, clear slot isn't visible
-        }    
+    else {
+        c2.cSaved = false; // if save isn't active, clear slot isn't visible
+    }    
 }
 
 
