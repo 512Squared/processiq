@@ -19,7 +19,7 @@ Slot s1, s2, s3, s4, s5, s6, s7, s8, s9, s10; // slots to save layers
 
 ControlPanel c1,c2; // command buttons: save, clear
 
-PlayControls play;
+PlayControls play; // command buttons: run visualisation - in progress
 
 PImage save = loadImage("images/save.png");
 PImage saveHide = loadImage("images/saveHide.png");
@@ -192,6 +192,15 @@ class Slot
                 stroke(96);
             }
 
+            if (layerSet == true)
+
+            {
+                textSize(20);
+                textAlign(CENTER);
+                fill(#56b822);
+                text(slotNum, sX, (sY + 14), sW, sH);
+            }
+
         }
 
         slotLayerShowHideDraw(); // draw slot buttons and grid layers
@@ -284,7 +293,7 @@ class ControlPanel // cPanel
     }
 }
 
-class PlayControls
+class PlayControls // visualisation play
 
 {
     int pX,pY,pW,pH;
@@ -539,7 +548,7 @@ void mainGrid()
 }
 
 
-// DRAWS SLOTS
+// DRAW LAYERS
 
 void slotLayerShowHideDraw()
 
@@ -747,7 +756,7 @@ void slotLayerShowHideDraw()
 }
 
 
-// DRAWS cPANEL
+// DRAW cPANEL
 
 void saveButtonDraw()
 
@@ -3910,7 +3919,7 @@ void clearButtonClicks()
 
 //.......
 
-
+// VISUALISATIONS 
 
 class Particle {
 
@@ -4115,11 +4124,6 @@ class ParticleSystem {
 
 
 }
-
-
-
-
-
 
 
 // Simple Vector3D Class 
