@@ -3282,9 +3282,9 @@ void slotSelectClicks()
     }     
 }
 
-void saveButtonClicks() 
+void saveButtonClicks()  
+{  // MAGIC FIX + click save button in cPanel 
 
-{  // click save button in cPanel 
         
     if (s1.layerVisible == false && s1.slotOn == true && s1.layerSet == true) 
         
@@ -3305,7 +3305,7 @@ void saveButtonClicks()
 
     if (s1.layerSet == false && s1.slotOn == true && layerSelect == selectState[2] && readyToSave == true) 
     
-    {  // s1.on click, get values for layer save
+    {  // MAGIC FIX + s1.on click, get values for layer save 
 
         if (endSelectX < startSelectX)
         
