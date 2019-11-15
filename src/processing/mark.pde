@@ -389,7 +389,7 @@ void layers()
 
 void mouseClicked() 
 
-{ // mouse click events 
+{ // mouse click events + deselect
 
     
     if (mouseY < 64) { // CHANGE GRID SIZE
@@ -472,7 +472,17 @@ void mouseClicked()
         startSelectY = 0;
         endSelectY = 0;
         readyToSave = false;
-
+        s1.slotOn = false;
+        s2.slotOn = false;
+        s3.slotOn = false;
+        s4.slotOn = false;
+        s5.slotOn = false;
+        s6.slotOn = false;
+        s7.slotOn = false;
+        s8.slotOn = false;
+        s9.slotOn = false;
+        s10.slotOn = false;
+        
                
     }
 
@@ -772,7 +782,7 @@ void saveButtonDraw()
 
 {
 
-    if (s1.layerSet == false && layerSelect == selectState[2])
+    if (s1.layerSet == false && layerSelect == selectState[2] && s1.slotOn == true)
     
     { // save button shows
         fill(255);   
@@ -780,7 +790,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s2.layerSet == false && layerSelect == selectState[2])
+    if (s2.layerSet == false && layerSelect == selectState[2] && s2.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -788,7 +798,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s3.layerSet == false && layerSelect == selectState[2])
+    if (s3.layerSet == false && layerSelect == selectState[2] && s3.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -796,7 +806,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s4.layerSet == false && layerSelect == selectState[2])
+    if (s4.layerSet == false && layerSelect == selectState[2] && s4.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -804,7 +814,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s5.layerSet == false && layerSelect == selectState[2])
+    if (s5.layerSet == false && layerSelect == selectState[2] && s5.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -812,7 +822,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s6.layerSet == false && layerSelect == selectState[2])
+    if (s6.layerSet == false && layerSelect == selectState[2] && s6.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -820,7 +830,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s7.layerSet == false && layerSelect == selectState[2])
+    if (s7.layerSet == false && layerSelect == selectState[2] && s7.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -828,7 +838,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s8.layerSet == false && layerSelect == selectState[2])
+    if (s8.layerSet == false && layerSelect == selectState[2] && s8.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -836,7 +846,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s9.layerSet == false && layerSelect == selectState[2])
+    if (s9.layerSet == false && layerSelect == selectState[2] && s9.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -844,7 +854,7 @@ void saveButtonDraw()
         image(save,c1.cX+5,c1.cY+5,30,30); 
     }
 
-    if (s10.layerSet == false && layerSelect == selectState[2])
+    if (s10.layerSet == false && layerSelect == selectState[2] && s10.slotOn == true)
     
     { // save is off
         fill(255);   
@@ -1006,6 +1016,7 @@ void saveShowHideButtonDraw()
     }
     
     if (s3.layerVisible == false && s3.layerSet == true && s3.slotOn == true)  
+    
     { //  s3.save is on, but invisible
 
         translate(0,0);        
@@ -1919,7 +1930,7 @@ void hoverBeforeSaveDraw()
 
 {
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s1.layerSet == false && layerSelect == selectState[2]  && s1.slotOn == true) 
     
     { // draw hover before save
         
@@ -1943,7 +1954,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s2.layerSet == false && layerSelect == selectState[2]  && s2.slotOn == true) 
     
     { // draw hover before save
         
@@ -1967,7 +1978,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s3.layerSet == false && layerSelect == selectState[2] && s3.slotOn == true) 
     
     { // draw hover before save
         
@@ -1991,7 +2002,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s4.layerSet == false && layerSelect == selectState[2] && s4.slotOn == true) 
     
     { // draw hover before save
         
@@ -2015,7 +2026,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s5.layerSet == false && layerSelect == selectState[2] && s5.slotOn == true) 
     
     { // draw hover before save
         
@@ -2039,7 +2050,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s6.layerSet == false && layerSelect == selectState[2] && s6.slotOn == true) 
     
     { // draw hover before save
         
@@ -2063,7 +2074,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s7.layerSet == false && layerSelect == selectState[2] && s7.slotOn == true) 
     
     { // draw hover before save
         
@@ -2087,7 +2098,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s8.layerSet == false && layerSelect == selectState[2] && s8.slotOn == true) 
     
     { // draw hover before save
         
@@ -2111,7 +2122,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s9.layerSet == false && layerSelect == selectState[2] && s9.slotOn == true) 
     
     { // draw hover before save
         
@@ -2135,7 +2146,7 @@ void hoverBeforeSaveDraw()
 
     }
 
-    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.layerSet == false && layerSelect == selectState[2]) 
+    if (mouseX > c1.cX && mouseX < c1.cX+40 && mouseY > c1.cY && mouseY < c1.cY+40 && s10.layerSet == false && layerSelect == selectState[2] && s10.slotOn == true) 
     
     { // draw hover before save
         
