@@ -94,7 +94,7 @@ class Slot
         
         {
 
-            textSize(24);
+            textSize(20);
             textAlign(CENTER);
             fill(#fefefe);
             text(slotNum, sX, (sY + 13), sW, sH);
@@ -120,7 +120,7 @@ class Slot
 
             {
                 stroke(96);
-                textSize(24);
+                textSize(20);
                 textAlign(CENTER);
                 fill(#fa38fc); //dark background
                 text(slotNum, sX, (sY + 13), sW, sH);
@@ -133,7 +133,7 @@ class Slot
         {
             fill(sC);   
             rect(sX,sY,sW,sH);
-            textSize(24);
+            textSize(20);
             textAlign(CENTER);
             fill(#575757);
             text(slotNum, sX, (sY + 12), sW, sH);
@@ -161,7 +161,7 @@ class Slot
 
 
             stroke(96);
-            textSize(24);
+            textSize(20);
             textAlign(CENTER);
             fill(#575757);
             text(slotNum, sX, (sY + 13), sW, sH);
@@ -172,7 +172,7 @@ class Slot
         
             {
 
-                textSize(24);
+                textSize(20);
                 textAlign(CENTER);
                 fill(#f2f2f2);
                 text(slotNum, sX, (sY + 13), sW, sH);
@@ -194,7 +194,7 @@ class Slot
 
                 {
                     stroke(96);
-                    textSize(24);
+                    textSize(20);
                     textAlign(CENTER);
                     fill(#ec1af0);
                     text(slotNum, sX, (sY + 13), sW, sH);
@@ -207,7 +207,7 @@ class Slot
 
         {
             stroke(96);
-            textSize(24);
+            textSize(20);
             textAlign(CENTER);
             fill(#ec1af0);
             text(slotNum, sX, (sY + 13), sW, sH);
@@ -3929,7 +3929,7 @@ void clearButtonClicks()
 
 //.......
 
-// VISUALISATIONS 
+// TO-DO: VISUALISATIONS ... in progress
 
 class Particle {
 
@@ -4041,14 +4041,9 @@ class Particle {
 
 }
 
-
-
-
-
 // A class to describe a group of Particles
 
 // An ArrayList is used to manage the list of Particles 
-
 
 
 class ParticleSystem {
