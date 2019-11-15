@@ -1,5 +1,8 @@
 /* @pjs preload="images/save.png,images/clear.png,images/saveHide.png,images/clearOn.png,images/saveShow.png"; */
 
+/* @pjs font="Arial Black.ttf"; */
+        
+
 var gridSize = 128; // number of squares in the grid
 var boxSize = 512; // size of the box holding the grid
 float startSelectX = 0; // layer start x co-ordinates
@@ -113,6 +116,16 @@ class Slot
             line(sX+2,sY+2,sX+38,sY+2);
             stroke(96);
 
+            if (layerSet == true)
+
+            {
+                stroke(96);
+                textSize(24);
+                textAlign(CENTER);
+                fill(#fa38fc); //dark background
+                text(slotNum, sX, (sY + 13), sW, sH);
+            }            
+
         } 
         
         if (slotOn == false) // draw inactive slot (no data, so class level)
@@ -176,28 +189,27 @@ class Slot
                 line(sX+2,sY+2,sX+38,sY+2);
 
                 stroke(96);
+
+                if (layerSet == true)
+
+                {
+                    stroke(96);
+                    textSize(24);
+                    textAlign(CENTER);
+                    fill(#ec1af0);
+                    text(slotNum, sX, (sY + 13), sW, sH);
+                }
             }
             
-            if (layerSet == true)
-
-            {   
-                stroke(96);
-                textSize(24);
-                textAlign(CENTER);
-                fill(#3e9212);
-                text(slotNum, sX, (sY + 13), sW, sH);
-            }
-
-
         }
  
-        if (layerSet == true)
+        if (slotOn == false && layerSet == true)
 
         {
             stroke(96);
             textSize(24);
             textAlign(CENTER);
-            fill(#3e9212);
+            fill(#ec1af0);
             text(slotNum, sX, (sY + 13), sW, sH);
         }
 
