@@ -3300,8 +3300,7 @@ void saveButtonClicks()
     if (s1.layerVisible == false && s1.slotOn == true && s1.layerSet == true) 
         
     { // s1.switch save visibility to on, from off
-             
-        
+               
         s1.layerVisible = true; // this is for the layer draw
 
     }
@@ -3309,8 +3308,7 @@ void saveButtonClicks()
     else if (s1.layerVisible == true && s1.slotOn == true && s1.layerSet == true) 
     
     { // s1.switch save visibility to off, from on
-            
-        
+                
         s1.layerVisible = false; // controls the layer draw in the grid
     }
 
