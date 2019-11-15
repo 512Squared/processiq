@@ -3,7 +3,7 @@
 /* @pjs font="Arial Black.ttf"; */
         
 
-var gridSize = 128; // number of squares in the grid
+var gridSize = 64; // number of squares in the grid; 64 is 8 x 8
 var boxSize = 512; // size of the box holding the grid
 float startSelectX = 0; // layer start x co-ordinates
 float startSelectY = 0; // layer start y co-ordinates
