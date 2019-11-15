@@ -82,18 +82,6 @@ class Slot
             
     }
 
-    void gradientRect(int x, int y, int w, int h, color gradC1, color gradC2) 
-    
-    {
-        beginShape();
-        fill(gradC1);
-        vertex(x,y);
-        vertex(x,y+h);
-        fill(gradC2);
-        vertex(x+w,y+h);
-        vertex(x+w,y);
-        endShape();
-    }
     
     void display() 
     
@@ -102,14 +90,11 @@ class Slot
         if (slotOn == true) // draw active slot (no data, so class level)
         
         {
-            // fill(59,70,84);
-            gradC1 = (59,70,84);
-            gradC2 = (73,87,105);
-            gradientRect(sX,sY,sW,sH,gradC1,gradC2);
-            textSize(20);
+
+            textSize(24);
             textAlign(CENTER);
             fill(#fefefe);
-            text(slotNum, sX, (sY + 14), sW, sH);
+            text(slotNum, sX, (sY + 13), sW, sH);
             
             stroke(150,164,181);
             line(sX+1,sY+39,sX+39,sY+39);
@@ -135,11 +120,14 @@ class Slot
         {
             fill(sC);   
             rect(sX,sY,sW,sH);
-            textSize(20);
+            textSize(24);
             textAlign(CENTER);
             fill(#575757);
-            text(slotNum, sX, (sY + 13), sW, sH);
+            text(slotNum, sX, (sY + 12), sW, sH);
         }
+
+        
+
 
         if (mouseX > sX && mouseX < sX+40 && mouseY > sY && mouseY < sY+40 && slotOn == false) // slot rollovers
         
@@ -160,23 +148,21 @@ class Slot
 
 
             stroke(96);
-            textSize(20);
+            textSize(24);
             textAlign(CENTER);
             fill(#575757);
-            text(slotNum, sX, (sY + 14), sW, sH);
+            text(slotNum, sX, (sY + 13), sW, sH);
 
 
         
             if (mousePressed == true && slotOn == false) // mousepressed and slot is off
         
             {
-                gradC1 = (59,70,84);
-                gradC2 = (73,87,105);
-                gradientRect(sX,sY,sW,sH,gradC1,gradC2);
-                textSize(20);
+
+                textSize(24);
                 textAlign(CENTER);
                 fill(#f2f2f2);
-                text(slotNum, sX, (sY + 14), sW, sH);
+                text(slotNum, sX, (sY + 13), sW, sH);
                 stroke(150,164,181);
                 line(sX+1,sY+39,sX+39,sY+39);
                 line(sX+39,sY+1,sX+39,sY+39);
@@ -191,16 +177,28 @@ class Slot
 
                 stroke(96);
             }
-
+            
             if (layerSet == true)
 
-            {
-                textSize(20);
+            {   
+                stroke(96);
+                textSize(24);
                 textAlign(CENTER);
-                fill(#56b822);
-                text(slotNum, sX, (sY + 14), sW, sH);
+                fill(#3e9212);
+                text(slotNum, sX, (sY + 13), sW, sH);
             }
 
+
+        }
+ 
+        if (layerSet == true)
+
+        {
+            stroke(96);
+            textSize(24);
+            textAlign(CENTER);
+            fill(#3e9212);
+            text(slotNum, sX, (sY + 13), sW, sH);
         }
 
         slotLayerShowHideDraw(); // draw slot buttons and grid layers
