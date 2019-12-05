@@ -3938,6 +3938,19 @@ void clearButtonClicks()
 
 //.......
 
+
+/* TO-DO: Add button for displaying all layers at once
+
+1) Add button 
+2) Add switch to button
+3) check slot1-10 if active, display, same code as individual slots
+4) unselect if switched off or other button is pressed. 
+5) So, best to have a switch for on, and switch for off. Then incorporate this switch into other parts of the code. 
+
+*/
+
+
+
 // TO-DO: VISUALISATIONS ... in progress
 
 class Particle {
